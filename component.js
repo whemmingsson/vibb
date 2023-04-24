@@ -10,6 +10,8 @@ class Component extends ComponentBase {
     // Inputs and outputs are connectors
     this.inputs = [];
     this.outputs = [];
+
+    this.label = "AND"; // For now, label the component as "AND"
   }
 
   _applyBorder() {
@@ -63,11 +65,24 @@ class Component extends ComponentBase {
     state.unregister(connector);
   }
 
-  render() {
+  _renderRect() {
     this.color.applyFill();
     this._applyBorder();
-
     rect(this.x, this.y, this.w, this.h);
+  }
+
+  _renderLabel() {
+    if (this.label) {
+      fill(0);
+      textAlign(CENTER);
+      textSize(this.h * 0.3);
+      text(this.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3) / 2.5);
+    }
+  }
+
+  render() {
+    this._renderRect();
+    this._renderLabel();
 
     this.inputs.forEach((input) => input.render());
     this.outputs.forEach((output) => output.render());
