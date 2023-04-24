@@ -83,6 +83,7 @@ function mousePressed() {
     if (c.mouseIsOver && c.mouseIsOver() && c.isClickable) {
       if (c instanceof Connector && c.type === 'output' && mouseButton === LEFT) {
         wire = new Wire(c, null);
+        wire.on = c.on;
         break;
       }
       if (c instanceof Connector && c.type === 'input' && wire && mouseButton === LEFT) {

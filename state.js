@@ -10,7 +10,8 @@ class State {
     unregister(object) {
         if (!object.id) return;
         const idx = this.objects.indexOf(this.objects.find(o => o.id === object.id));
-        this.objects.splice(idx, 1);
+        if (idx >= 0)
+            this.objects.splice(idx, 1);
     }
 }
 

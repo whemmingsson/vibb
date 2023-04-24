@@ -33,6 +33,7 @@ class Connector extends ComponentBase {
         const inWireIdx = this.inWires.findIndex(w => w.id === wire.id);
         if (inWireIdx >= 0) {
             this.inWires.splice(inWireIdx, 1);
+            this.on = this.inWires.length === 0 ? false : this.inWires.some(w => w.on);
         }
         const outWireIdx = this.outWires.findIndex(w => w.id === wire.id);
         if (outWireIdx >= 0) {
