@@ -1,29 +1,41 @@
-class Line {
-  constructor(x1, y1, x2, y2) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
-  }
 
-  render() {
-    stroke(4);
-    line(this.x1, this.y1, this.x2, this.y2);
-  }
-}
-
-class Wire {
+class Wire extends ComponentBase {
   constructor(from, to) {
+    super(true, true, false, false);
+
     if (from.type !== "output") throw Error("Wire needs to go from Output to Input (from was not output)");
-    if (to.type !== "input") throw Error("Wire needs to go from Output to Input (to was not input)");
+    if (to && to.type !== "input") throw Error("Wire needs to go from Output to Input (to was not input)");
 
     this.from = from;
     this.to = to;
+    this.on = false;
+  }
+
+  _applyStroke() {
+    if (this.mouseIsOver()) {
+      stroke(0, 0, 100);
+      return;
+    }
+
+    if (this.on) ColorScheme.SignalOn.applyStroke();
+    else ColorScheme.SignalOff.applyStroke();
+  }
+
+  mouseIsOver() {
+    if (this.from && this.to) {
+      return isPointOnLine({ x: mouseX, y: mouseY }, { x: this.from.x, y: this.from.y }, { x: this.to.x, y: this.to.y });
+    }
+    return false;
   }
 
   render() {
-    // For now, render it as a simple line
-    stroke(4);
-    //line(this.from.x, this.from.y, this.to.x, this.to.y);
+    this._applyStroke();
+    strokeWeight(5);
+    line(this.from.x, this.from.y, this.to ? this.to.x : mouseX, this.to ? this.to.y : mouseY);
+  }
+
+  onClick() {
+    this.from.removeWire(this);
+    this.to.removeWire(this);
   }
 }

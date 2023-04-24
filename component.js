@@ -70,6 +70,7 @@ class Component extends ComponentBase {
 
   _renderLabel() {
     if (this.gate && this.gate.label) {
+      noStroke();
       fill(0);
       textAlign(CENTER);
       textSize(this.h * 0.3);
@@ -85,11 +86,24 @@ class Component extends ComponentBase {
     this.outputs.forEach((output) => output.render());
   }
 
-  logic() {
+  _inputLogic() {
+    // Apply signal if input has any wires going into it
+    this.inputs.forEach((i) => {
+      i.applyInputSignal();
+    })
+  }
+
+  _outputLogic() {
+    // Logic of the gate it self
     const outputSignal = this.gate.logic(this.inputs.map((i) => i.on));
     this.outputs.forEach((o) => {
-      o.on = outputSignal;
+      o.toggle(outputSignal);
     });
+  }
+
+  logic() {
+    this._inputLogic();
+    this._outputLogic();
   }
 
   mouseIsOver() {
@@ -99,7 +113,6 @@ class Component extends ComponentBase {
   }
 
   onClick(button) {
-    console.log(button);
     if (button === LEFT) state.register(this.addInput());
     else if (button === RIGHT) state.register(this.addOutput());
   }

@@ -1,12 +1,10 @@
 let width, height;
 
+// Component array for rendering
 const components = [];
 
-function registerComponents() {
-  components.forEach((c) => state.register(c));
-  state.register(component.addInput());
-  state.register(component.addOutput());
-}
+// Wire construction
+let wire = undefined; // Wire used for rendering during construction
 
 function createGate(gateDef, x, y) {
   const gate = new Component(x, y, 200, 100, gateDef);
@@ -28,6 +26,10 @@ function setup() {
   colorMode(HSB);
   noStroke();
 
+  // CREATE CANVAS
+  createCanvas(width + 1, height + 1);
+
+  // DISABLE RIGHT CLICK CONTEXT MENU
   for (let element of document.getElementsByClassName("p5Canvas")) {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
@@ -40,9 +42,6 @@ function setup() {
   createGate(Gates.Xor, 100, 400);
   createGate(Gates.Xnor, 550, 400);
   createGate(Gates.Not, 100, 550);
-
-  // CREATE CANVAS
-  createCanvas(width + 1, height + 1);
 }
 
 function renderComponents() {
@@ -54,21 +53,10 @@ function doComponentLogic() {
 }
 
 function applyCursor() {
-  if (state.objects.some((c) => c.mouseIsOver(true))) {
+  if (state.objects.some((c) => c.mouseIsOver && c.mouseIsOver(true))) {
     cursor(HAND);
   } else {
     cursor(ARROW);
-  }
-}
-
-// WIRE LAB
-let isDragging = false;
-let wire = undefined;
-const wires = [];
-function mouseDragged() {
-  if (wire) {
-    wire.x2 = mouseX;
-    wire.y2 = mouseY;
   }
 }
 
@@ -78,29 +66,38 @@ function draw() {
   renderComponents();
   applyCursor();
 
-  // WIRE LAB
   if (wire) wire.render();
-  wires.forEach((wire) => wire.render());
 }
 
 function mousePressed() {
-  let interactedWithComponent = false;
-  state.objects.forEach((c) => {
-    if (c.mouseIsOver() && c.isClickable) {
-      c.onClick(mouseButton);
-      interactedWithComponent = true;
-    }
-  });
-
-  //WIRE LAB
-  if (!interactedWithComponent) wire = new Line(mouseX, mouseY, mouseX, mouseY);
-}
-
-//WIRE LAB
-function mouseReleased() {
-  if (wire) {
-    const clone = new Line(wire.x1, wire.y1, wire.x2, wire.y2);
-    wires.push(clone);
+  // Cancel creating wire
+  if (mouseButton === RIGHT && wire) {
     wire = undefined;
+    return;
+  }
+
+  // Handle click logic
+  for (let i = 0; i < state.objects.length; i++) {
+    const c = state.objects[i];
+
+    if (c.mouseIsOver && c.mouseIsOver() && c.isClickable) {
+      if (c instanceof Connector && c.type === 'output' && mouseButton === LEFT) {
+        wire = new Wire(c, null);
+        break;
+      }
+      if (c instanceof Connector && c.type === 'input' && wire && mouseButton === LEFT) {
+        const clone = new Wire(wire.from, c);
+        state.register(clone);
+
+        // Register the wires on the connectors
+        wire.from.outWires.push(clone);
+        c.inWires.push(clone);
+
+        wire = undefined;
+        break;
+      }
+
+      c.onClick(mouseButton);
+    }
   }
 }
