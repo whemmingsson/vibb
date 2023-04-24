@@ -1,15 +1,24 @@
 let width, height;
 
-const component = new Component(200, 200, 300, 200);
-const component2 = new Component(650, 550);
-
-const components = [component, component2];
+const components = [];
 
 function registerComponents() {
   components.forEach((c) => state.register(c));
   state.register(component.addInput());
   state.register(component.addOutput());
-  state.register(component2.addInput());
+}
+
+function createGate(gateDef, x, y) {
+  const gate = new Component(x, y, 200, 100, gateDef);
+  state.register(gate);
+  components.push(gate);
+
+  for (let i = 0; i < gateDef.inputs; i++) {
+    state.register(gate.addInput());
+  }
+  for (let i = 0; i < gateDef.outputs; i++) {
+    state.register(gate.addOutput());
+  }
 }
 
 function setup() {
@@ -23,8 +32,14 @@ function setup() {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
-  // LOGIC
-  registerComponents(); // Make the top-level components available for custom logic
+  // SETUP GATES
+  createGate(Gates.And, 100, 100);
+  createGate(Gates.Nand, 550, 100);
+  createGate(Gates.Or, 100, 250);
+  createGate(Gates.Nor, 550, 250);
+  createGate(Gates.Xor, 100, 400);
+  createGate(Gates.Xnor, 550, 400);
+  createGate(Gates.Not, 100, 550);
 
   // CREATE CANVAS
   createCanvas(width + 1, height + 1);
@@ -32,6 +47,10 @@ function setup() {
 
 function renderComponents() {
   components.forEach((c) => c.render()); // Will also render connectors
+}
+
+function doComponentLogic() {
+  components.forEach((c) => c.logic());
 }
 
 function applyCursor() {
@@ -55,6 +74,7 @@ function mouseDragged() {
 
 function draw() {
   background(25);
+  doComponentLogic();
   renderComponents();
   applyCursor();
 

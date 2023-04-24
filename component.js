@@ -1,17 +1,14 @@
 class Component extends ComponentBase {
-  constructor(x, y, w, h) {
+  constructor(x, y, w, h, gate) {
     super(true, true, true, true);
     this.x = x;
     this.y = y;
     this.color = new Color(50, 360, 100);
     this.w = w ? w : 100;
     this.h = h ? h : 100;
-
-    // Inputs and outputs are connectors
     this.inputs = [];
     this.outputs = [];
-
-    this.label = "AND"; // For now, label the component as "AND"
+    this.gate = gate;
   }
 
   _applyBorder() {
@@ -72,11 +69,11 @@ class Component extends ComponentBase {
   }
 
   _renderLabel() {
-    if (this.label) {
+    if (this.gate && this.gate.label) {
       fill(0);
       textAlign(CENTER);
       textSize(this.h * 0.3);
-      text(this.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3) / 2.5);
+      text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3) / 2.5);
     }
   }
 
@@ -86,6 +83,13 @@ class Component extends ComponentBase {
 
     this.inputs.forEach((input) => input.render());
     this.outputs.forEach((output) => output.render());
+  }
+
+  logic() {
+    const outputSignal = this.gate.logic(this.inputs.map((i) => i.on));
+    this.outputs.forEach((o) => {
+      o.on = outputSignal;
+    });
   }
 
   mouseIsOver() {
