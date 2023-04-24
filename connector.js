@@ -34,6 +34,7 @@ class Connector extends ComponentBase {
   }
 
   onClick() {
-    this.parentComponent.removeInput(this);
+    if (this.type === "input") this.parentComponent.removeInput(this);
+    else if (this.type === "output") this.parentComponent.removeOutput(this);
   }
 }

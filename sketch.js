@@ -1,49 +1,55 @@
-
 let width, height;
 
-const component = new Component(200, 200, 100, 300);
-const component2 = new Component(350, 350);
+const component = new Component(200, 200, 300, 200);
+const component2 = new Component(550, 550);
 
 const components = [component, component2];
-const connectors = [];
 
 function registerComponents() {
-    components.forEach(c => state.register(c));
-
-    state.register(component.addInput());
+  components.forEach((c) => state.register(c));
+  state.register(component.addInput());
 }
 
 function setup() {
-    colorMode(HSB);
-    width = 1000;
-    height = 800;
+  // RENDERING
+  width = 1000;
+  height = 800;
+  colorMode(HSB);
+  noStroke();
 
-    registerComponents(); // Make the top-level components available for custom logic
+  for (let element of document.getElementsByClassName("p5Canvas")) {
+    element.addEventListener("contextmenu", (e) => e.preventDefault());
+  }
 
-    createCanvas(width + 1, height + 1);
-    noStroke();
+  // LOGIC
+  registerComponents(); // Make the top-level components available for custom logic
 
-    for (let element of document.getElementsByClassName("p5Canvas")) {
-        element.addEventListener("contextmenu", (e) => e.preventDefault());
-    }
+  // CREATE CANVAS
+  createCanvas(width + 1, height + 1);
+}
+
+function renderComponents() {
+  components.forEach((c) => c.render()); // Will also render connectors
+}
+
+function applyCursor() {
+  if (state.objects.some((c) => c.mouseIsOver(true))) {
+    cursor(HAND);
+  } else {
+    cursor(ARROW);
+  }
 }
 
 function draw() {
-    background(25);
-    components.forEach(c => c.render()); // Will also render connectors
-
-    //Apply current cursor
-    if (state.objects.some(c => c.mouseIsOver(true))) {
-        cursor(HAND);
-    }
-    else {
-        cursor(ARROW);
-    }
+  background(25);
+  renderComponents();
+  applyCursor();
 }
 
-
 function mousePressed() {
-    state.objects.forEach(c => {
-        if (c.mouseIsOver() && c.isClickable) { c.onClick(mouseButton) }
-    });
+  state.objects.forEach((c) => {
+    if (c.mouseIsOver() && c.isClickable) {
+      c.onClick(mouseButton);
+    }
+  });
 }

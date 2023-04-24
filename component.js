@@ -21,37 +21,27 @@ class Component extends ComponentBase {
     }
   }
 
-  _positionAndScaleInputs() {
-    const availableConnectorHeight = Math.min(this.h / this.inputs.length, 75);
+  _positionAndScaleConnectors(connectors) {
+    const availableConnectorHeight = Math.min(this.h / connectors.length, 75);
 
-    this.inputs.forEach((input, idx) => {
-      input.h = availableConnectorHeight - Globals.ConnectorSpacing * 2;
-      input.w = availableConnectorHeight - Globals.ConnectorSpacing * 2;
-      input.y = this.y + idx * availableConnectorHeight + availableConnectorHeight / 2;
-    });
-  }
-
-  _positionAndScaleOutputs() {
-    const availableConnectorHeight = Math.min(this.h / this.outputs.length, 75);
-
-    this.outputs.forEach((output, idx) => {
-      output.y = this.y + idx * availableConnectorHeight + availableConnectorHeight / 2;
-      output.h = availableConnectorHeight - Globals.ConnectorSpacing * 2;
-      output.w = availableConnectorHeight - Globals.ConnectorSpacing * 2;
+    connectors.forEach((connector, idx) => {
+      connector.y = this.y + idx * availableConnectorHeight + availableConnectorHeight / 2;
+      connector.h = availableConnectorHeight - Globals.ConnectorSpacing * 2;
+      connector.w = availableConnectorHeight - Globals.ConnectorSpacing * 2;
     });
   }
 
   addInput() {
     const input = new Connector(this.x, 0, 0, this, "input");
     this.inputs.push(input);
-    this._positionAndScaleInputs();
+    this._positionAndScaleConnectors(this.inputs);
     return input;
   }
 
   addOutput() {
     const output = new Connector(this.x + this.w, 0, 0, this, "output");
     this.outputs.push(output);
-    this._positionAndScaleOutputs();
+    this._positionAndScaleConnectors(this.outputs);
     return output;
   }
 
@@ -60,7 +50,16 @@ class Component extends ComponentBase {
     if (idx < 0) return;
 
     this.inputs.splice(idx, 1);
-    this._positionAndScaleInputs();
+    this._positionAndScaleConnectors(this.inputs);
+    state.unregister(connector);
+  }
+
+  removeOutput(connector) {
+    const idx = this.outputs.findIndex((c) => c.id === connector.id);
+    if (idx < 0) return;
+
+    this.outputs.splice(idx, 1);
+    this._positionAndScaleConnectors(this.outputs);
     state.unregister(connector);
   }
 
