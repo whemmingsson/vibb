@@ -33,8 +33,10 @@ class Connector extends ComponentBase {
     if (this.type === "output") return dist(mouseX, mouseY, this.x, this.y) < this.w / 2 && mouseX > this.x;
   }
 
-  onClick() {
-    if (this.type === "input") this.parentComponent.removeInput(this);
-    else if (this.type === "output") this.parentComponent.removeOutput(this);
+  onClick(mouseButton) {
+    if (mouseButton === RIGHT) {
+      if (this.type === "input") this.parentComponent.removeInput(this);
+      else if (this.type === "output") this.parentComponent.removeOutput(this);
+    }
   }
 }
