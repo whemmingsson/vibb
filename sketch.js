@@ -6,8 +6,12 @@ const components = [];
 // Wire construction
 let wire = undefined; // Wire used for rendering during construction
 
+// Dragging functionality
+let dragComponent = null;
+let dragDeltaX, dragDeltaY;
+
 function createGate(gateDef, x, y) {
-  const gate = new Component(x, y, 200, 100, gateDef);
+  const gate = new Component(x, y, 120, 60, gateDef);
   state.register(gate);
   components.push(gate);
 
@@ -69,6 +73,18 @@ function draw() {
   if (wire) wire.render();
 }
 
+function mouseDragged() {
+  if (dragComponent) {
+    dragComponent.updatePosition(mouseX - dragDeltaX, mouseY - dragDeltaY);
+  }
+}
+
+function mouseReleased() {
+  if (dragComponent) {
+    dragComponent = null;
+  }
+}
+
 function mousePressed() {
   // Cancel creating wire
   if (mouseButton === RIGHT && wire) {
@@ -80,13 +96,22 @@ function mousePressed() {
   for (let i = 0; i < state.objects.length; i++) {
     const c = state.objects[i];
 
+    // Begin-dragging
+    if (c.mouseIsOver && c.mouseIsOver() && c instanceof Component) {
+      dragComponent = c;
+      dragDeltaX = Math.abs(mouseX - dragComponent.x);
+      dragDeltaY = Math.abs(mouseY - dragComponent.y);
+      break;
+    }
+
+    // Handle wire creation
     if (c.mouseIsOver && c.mouseIsOver() && c.isClickable) {
-      if (c instanceof Connector && c.type === 'output' && mouseButton === LEFT) {
+      if (c instanceof Connector && c.type === "output" && mouseButton === LEFT) {
         wire = new Wire(c, null);
         wire.on = c.on;
         break;
       }
-      if (c instanceof Connector && c.type === 'input' && wire && mouseButton === LEFT) {
+      if (c instanceof Connector && c.type === "input" && wire && mouseButton === LEFT) {
         const clone = new Wire(wire.from, c);
         state.register(clone);
 
@@ -99,6 +124,23 @@ function mousePressed() {
       }
 
       c.onClick(mouseButton);
+    }
+  }
+}
+
+function keyTyped() {
+  for (let i = 0; i < state.objects.length; i++) {
+    const c = state.objects[i];
+    if (c.mouseIsOver && c.mouseIsOver() && c.onKeyTyped && key != "d") {
+      c.onKeyTyped(key);
+    } else if (c.mouseIsOver && c.mouseIsOver() && c.onKeyTyped && key === "d") {
+      // Delete this
+      if (confirm("Do you wanna delete this gate?")) {
+        c.delete();
+        state.unregister(c);
+        const idx = components.indexOf(c);
+        components.splice(idx, 1);
+      }
     }
   }
 }

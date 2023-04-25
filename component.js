@@ -24,6 +24,7 @@ class Component extends ComponentBase {
     const availableConnectorHeight = Math.min(this.h / connectors.length, 75);
 
     connectors.forEach((connector, idx) => {
+      connector.x = connector.type === "input" ? this.x : this.x + this.w;
       connector.y = this.y + idx * availableConnectorHeight + availableConnectorHeight / 2;
       connector.h = availableConnectorHeight - Globals.ConnectorSpacing * 2;
       connector.w = availableConnectorHeight - Globals.ConnectorSpacing * 2;
@@ -86,11 +87,18 @@ class Component extends ComponentBase {
     this.outputs.forEach((output) => output.render());
   }
 
+  updatePosition(x, y) {
+    this.x = x;
+    this.y = y;
+    this._positionAndScaleConnectors(this.outputs);
+    this._positionAndScaleConnectors(this.inputs);
+  }
+
   _inputLogic() {
     // Apply signal if input has any wires going into it
     this.inputs.forEach((i) => {
       i.applyInputSignal();
-    })
+    });
   }
 
   _outputLogic() {
@@ -113,7 +121,22 @@ class Component extends ComponentBase {
   }
 
   onClick(button) {
-    if (button === LEFT) state.register(this.addInput());
-    else if (button === RIGHT) state.register(this.addOutput());
+    /*if (button === LEFT) state.register(this.addInput());
+    else if (button === RIGHT) state.register(this.addOutput()); */
+  }
+
+  onKeyTyped(key) {
+    if (key === "i") state.register(this.addInput());
+    else if (key === "o") state.register(this.addOutput());
+  }
+
+  delete() {
+    [...this.inputs, ...this.outputs].forEach((c) => {
+      c.delete();
+      state.unregister(c);
+    });
+
+    this.inputs = [];
+    this.outputs = [];
   }
 }
