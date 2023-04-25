@@ -9,6 +9,13 @@ class Component extends ComponentBase {
     this.inputs = [];
     this.outputs = [];
     this.gate = gate;
+
+    for (let i = 0; i < gate.inputs; i++) {
+      state.register(this.addInput());
+    }
+    for (let i = 0; i < gate.outputs; i++) {
+      state.register(this.addOutput());
+    }
   }
 
   _applyBorder() {
@@ -121,6 +128,9 @@ class Component extends ComponentBase {
   }
 
   onClick(button) {
+    if (button === RIGHT) {
+      return this.clone();
+    }
     /*if (button === LEFT) state.register(this.addInput());
     else if (button === RIGHT) state.register(this.addOutput()); */
   }
@@ -138,5 +148,11 @@ class Component extends ComponentBase {
 
     this.inputs = [];
     this.outputs = [];
+  }
+
+  clone() {
+    const clone = new Component(this.x, this.y + this.h + 20, this.w, this.h, this.gate);
+    state.register(clone);
+    return clone;
   }
 }

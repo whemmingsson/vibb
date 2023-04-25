@@ -14,13 +14,17 @@ function createGate(gateDef, x, y) {
   const gate = new Component(x, y, 120, 60, gateDef);
   state.register(gate);
   components.push(gate);
+}
 
-  for (let i = 0; i < gateDef.inputs; i++) {
-    state.register(gate.addInput());
-  }
-  for (let i = 0; i < gateDef.outputs; i++) {
-    state.register(gate.addOutput());
-  }
+function setupGates() {
+  // SETUP GATES
+  createGate(Gates.And, 100, 100);
+  createGate(Gates.Nand, 550, 100);
+  createGate(Gates.Or, 100, 250);
+  createGate(Gates.Nor, 550, 250);
+  createGate(Gates.Xor, 100, 400);
+  createGate(Gates.Xnor, 550, 400);
+  createGate(Gates.Not, 100, 550);
 }
 
 function setup() {
@@ -38,14 +42,7 @@ function setup() {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
-  // SETUP GATES
   createGate(Gates.And, 100, 100);
-  createGate(Gates.Nand, 550, 100);
-  createGate(Gates.Or, 100, 250);
-  createGate(Gates.Nor, 550, 250);
-  createGate(Gates.Xor, 100, 400);
-  createGate(Gates.Xnor, 550, 400);
-  createGate(Gates.Not, 100, 550);
 }
 
 function renderComponents() {
@@ -97,7 +94,7 @@ function mousePressed() {
     const c = state.objects[i];
 
     // Begin-dragging
-    if (c.mouseIsOver && c.mouseIsOver() && c instanceof Component) {
+    if (c.mouseIsOver && c.mouseIsOver() && c instanceof Component && mouseButton === LEFT) {
       dragComponent = c;
       dragDeltaX = Math.abs(mouseX - dragComponent.x);
       dragDeltaY = Math.abs(mouseY - dragComponent.y);
@@ -123,7 +120,10 @@ function mousePressed() {
         break;
       }
 
-      c.onClick(mouseButton);
+      const result = c.onClick(mouseButton);
+      if (result && result instanceof Component) {
+        components.push(result);
+      }
     }
   }
 }
