@@ -31,11 +31,13 @@ class Connector extends ComponentBase {
 
   removeWire(wire) {
     const inWireIdx = this.inWires.findIndex((w) => w.id === wire.id);
+    console.log("inWireIndex", inWireIdx);
     if (inWireIdx >= 0) {
       this.inWires.splice(inWireIdx, 1);
       this.on = this.inWires.length === 0 ? false : this.inWires.some((w) => w.on);
     }
     const outWireIdx = this.outWires.findIndex((w) => w.id === wire.id);
+    console.log("outWireIndex", outWireIdx);
     if (outWireIdx >= 0) {
       this.outWires.splice(outWireIdx, 1);
     }
@@ -46,6 +48,9 @@ class Connector extends ComponentBase {
   }
 
   _renderWires() {
+    // TODO: There is a bug here where the wires are rendered twice.
+    // One time on the input side, one time on the output side.
+    // Make a decision on when and how the wires should be rendered (either here or via the global pipeline)
     const wires = [...this.inWires, ...this.outWires];
     wires.forEach((w) => w.render());
   }
@@ -93,10 +98,10 @@ class Connector extends ComponentBase {
 
   delete() {
     [...this.inWires, ...this.outWires].forEach((w) => {
-      state.unregister(w);
+      this.removeWire(w);
     });
 
-    this.inWires = [];
-    this.outWires = [];
+    //this.inWires = [];
+    //this.outWires = [];
   }
 }

@@ -1,4 +1,3 @@
-
 class Wire extends ComponentBase {
   constructor(from, to) {
     super(true, true, false, false);
@@ -9,6 +8,9 @@ class Wire extends ComponentBase {
     this.from = from;
     this.to = to;
     this.on = false;
+
+    // Will represent branches of this wire
+    this.anchors = [];
   }
 
   _applyStroke() {
@@ -32,10 +34,21 @@ class Wire extends ComponentBase {
     this._applyStroke();
     strokeWeight(5);
     line(this.from.x, this.from.y, this.to ? this.to.x : mouseX, this.to ? this.to.y : mouseY);
+
+    if (this.mouseIsOver()) {
+      noFill();
+      ColorScheme.White.applyStroke();
+      strokeWeight(2);
+      ellipse(mouseX, mouseY, 10, 10);
+    }
+
+    console.log("Render wire with id", this.id);
   }
 
-  onClick() {
-    this.from.removeWire(this);
-    this.to.removeWire(this);
+  onClick(button) {
+    if (button === RIGHT) {
+      this.from.removeWire(this);
+      this.to.removeWire(this);
+    }
   }
 }
