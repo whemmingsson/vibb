@@ -3,7 +3,7 @@ class Gate extends ComponentBase {
     super(true, true, true, true);
     this.x = x;
     this.y = y;
-    this.color = new Color(50, 360, 100);
+    this.color = new Color(50, 360, 100, 0.9);
     this.w = w ? w : 100;
     this.h = h ? h : 100;
     this.inputs = [];
@@ -144,7 +144,6 @@ class Gate extends ComponentBase {
 
   delete() {
     [...this.inputs, ...this.outputs].forEach((c) => {
-      console.log("Deleting pin with id")
       c.delete();
       state.unregister(c);
     });

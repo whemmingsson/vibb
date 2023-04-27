@@ -39,10 +39,11 @@ function setup() {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
+  // Debug and test setup
   const g1 = createGate(Gates.Not, 100, 100);
   const g2 = createGate(Gates.Not, 400, 100);
-  // Setup a wire
 
+  // Setup a wire
   const wire = new Wire(g1.outputs[0], g2.inputs[0]);
   state.register(wire);
 

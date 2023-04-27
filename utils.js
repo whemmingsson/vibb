@@ -1,16 +1,17 @@
 class Color {
-  constructor(h, s, b) {
+  constructor(h, s, b, a) {
     this.h = h;
     this.s = s;
     this.b = b;
+    this.a = a;
   }
 
   applyFill() {
-    fill(this.h, this.s, this.b);
+    fill(this.h, this.s, this.b, this.a);
   }
 
   applyStroke() {
-    stroke(this.h, this.s, this.b);
+    stroke(this.h, this.s, this.b, this.a);
   }
 }
 
