@@ -144,6 +144,7 @@ class Gate extends ComponentBase {
 
   delete() {
     [...this.inputs, ...this.outputs].forEach((c) => {
+      console.log("Deleting pin with id")
       c.delete();
       state.unregister(c);
     });

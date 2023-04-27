@@ -42,7 +42,7 @@ class Pin extends ComponentBase {
     }
 
     _renderWires() {
-        const wires = [...this.outWires];
+        const wires = [...this.outWires]; // Only render on the "out" side to prevent double rendering
         wires.forEach((w) => w.render());
     }
 
@@ -88,8 +88,9 @@ class Pin extends ComponentBase {
     }
 
     delete() {
-        [...this.inWires, ...this.outWires].forEach((w) => {
-            this.removeWire(w);
+        [...this.outWires, ...this.inWires].forEach((w) => {
+            w.from.removeWire(w);
+            w.to.removeWire(w);
         });
     }
 }

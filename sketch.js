@@ -12,6 +12,7 @@ let dragDeltaX, dragDeltaY;
 function createGate(gateDef, x, y) {
   const gate = new Gate(x, y, 180, 80, gateDef);
   state.register(gate);
+  return gate;
 }
 
 function setupGates() {
@@ -38,8 +39,18 @@ function setup() {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
-  //createGate(Gates.And, 100, 100);
-  setupGates();
+  const g1 = createGate(Gates.Not, 100, 100);
+  const g2 = createGate(Gates.Not, 400, 100);
+  // Setup a wire
+
+  const wire = new Wire(g1.outputs[0], g2.inputs[0]);
+  state.register(wire);
+
+  // Register the wires on the pins
+  g1.outputs[0].outWires.push(wire);
+  g2.inputs[0].inWires.push(wire);
+
+  //setupGates();
 }
 
 /***************/
@@ -47,7 +58,7 @@ function setup() {
 /***************/
 
 function renderComponents() {
-  state.gates.forEach((c) => c.render()); // Will also render pins
+  state.gates.forEach((c) => c.render());
 }
 
 function doComponentLogic() {
