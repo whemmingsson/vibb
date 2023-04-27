@@ -27,28 +27,28 @@ class Gate extends ComponentBase {
     }
   }
 
-  _positionAndScaleConnectors(connectors) {
-    const availableConnectorHeight = Math.min(this.h / connectors.length, 75);
+  _positionAndScalePins(pins) {
+    const availablePinHeight = Math.min(this.h / pins.length, 50);
 
-    connectors.forEach((connector, idx) => {
-      connector.x = connector.type === "input" ? this.x : this.x + this.w;
-      connector.y = this.y + idx * availableConnectorHeight + availableConnectorHeight / 2;
-      connector.h = availableConnectorHeight - Globals.ConnectorSpacing * 2;
-      connector.w = availableConnectorHeight - Globals.ConnectorSpacing * 2;
+    pins.forEach((pin, idx) => {
+      pin.x = pin.type === "input" ? this.x : this.x + this.w;
+      pin.y = this.y + idx * availablePinHeight + availablePinHeight / 2;
+      pin.h = availablePinHeight - Globals.PinSpacing * 2;
+      pin.w = availablePinHeight - Globals.PinSpacing * 2;
     });
   }
 
   addInput() {
     const input = new Pin(this.x, 0, 0, this, "input");
     this.inputs.push(input);
-    this._positionAndScaleConnectors(this.inputs);
+    this._positionAndScalePins(this.inputs);
     return input;
   }
 
   addOutput() {
     const output = new Pin(this.x + this.w, 0, 0, this, "output");
     this.outputs.push(output);
-    this._positionAndScaleConnectors(this.outputs);
+    this._positionAndScalePins(this.outputs);
     return output;
   }
 
@@ -57,7 +57,7 @@ class Gate extends ComponentBase {
     if (idx < 0) return;
 
     this.inputs.splice(idx, 1);
-    this._positionAndScaleConnectors(this.inputs);
+    this._positionAndScalePins(this.inputs);
     state.unregister(connector);
   }
 
@@ -66,7 +66,7 @@ class Gate extends ComponentBase {
     if (idx < 0) return;
 
     this.outputs.splice(idx, 1);
-    this._positionAndScaleConnectors(this.outputs);
+    this._positionAndScalePins(this.outputs);
     state.unregister(connector);
   }
 
@@ -83,7 +83,6 @@ class Gate extends ComponentBase {
       textAlign(CENTER);
       textSize(this.h * 0.3);
       text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3) / 2.5);
-      //text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3) / 2.5);
 
       // Render ID for debugging
       textSize(this.h * 0.2);
@@ -102,8 +101,8 @@ class Gate extends ComponentBase {
   updatePosition(x, y) {
     this.x = x;
     this.y = y;
-    this._positionAndScaleConnectors(this.outputs);
-    this._positionAndScaleConnectors(this.inputs);
+    this._positionAndScalePins(this.outputs);
+    this._positionAndScalePins(this.inputs);
   }
 
   _inputLogic() {
@@ -136,8 +135,6 @@ class Gate extends ComponentBase {
     if (button === RIGHT) {
       return this.clone();
     }
-    /*if (button === LEFT) state.register(this.addInput());
-    else if (button === RIGHT) state.register(this.addOutput()); */
   }
 
   onKeyTyped(key) {
@@ -158,6 +155,5 @@ class Gate extends ComponentBase {
   clone() {
     const clone = new Gate(this.x, this.y + this.h + 20, this.w, this.h, this.gate);
     state.register(clone);
-    return clone;
   }
 }

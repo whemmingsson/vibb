@@ -21,8 +21,7 @@ const ColorScheme = {
 };
 
 const Globals = {
-  ConnectorWidth: 50,
-  ConnectorSpacing: 2,
+  PinSpacing: 2,
 };
 
 function isPointOnLine(p, p1, p2) {
