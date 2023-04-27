@@ -1,4 +1,4 @@
-class Component extends ComponentBase {
+class Gate extends ComponentBase {
   constructor(x, y, w, h, gate) {
     super(true, true, true, true);
     this.x = x;
@@ -39,14 +39,14 @@ class Component extends ComponentBase {
   }
 
   addInput() {
-    const input = new Connector(this.x, 0, 0, this, "input");
+    const input = new Pin(this.x, 0, 0, this, "input");
     this.inputs.push(input);
     this._positionAndScaleConnectors(this.inputs);
     return input;
   }
 
   addOutput() {
-    const output = new Connector(this.x + this.w, 0, 0, this, "output");
+    const output = new Pin(this.x + this.w, 0, 0, this, "output");
     this.outputs.push(output);
     this._positionAndScaleConnectors(this.outputs);
     return output;
@@ -83,6 +83,11 @@ class Component extends ComponentBase {
       textAlign(CENTER);
       textSize(this.h * 0.3);
       text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3) / 2.5);
+      //text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3) / 2.5);
+
+      // Render ID for debugging
+      textSize(this.h * 0.2);
+      text(this.id, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3));
     }
   }
 
@@ -151,7 +156,7 @@ class Component extends ComponentBase {
   }
 
   clone() {
-    const clone = new Component(this.x, this.y + this.h + 20, this.w, this.h, this.gate);
+    const clone = new Gate(this.x, this.y + this.h + 20, this.w, this.h, this.gate);
     state.register(clone);
     return clone;
   }

@@ -1,8 +1,3 @@
-let width, height;
-
-// Component array for rendering
-const components = [];
-
 // Wire construction
 let wire = undefined; // Wire used for rendering during construction
 
@@ -10,10 +5,13 @@ let wire = undefined; // Wire used for rendering during construction
 let dragComponent = null;
 let dragDeltaX, dragDeltaY;
 
+/***********/
+/** SETUP **/
+/***********/
+
 function createGate(gateDef, x, y) {
-  const gate = new Component(x, y, 120, 60, gateDef);
+  const gate = new Gate(x, y, 180, 80, gateDef);
   state.register(gate);
-  components.push(gate);
 }
 
 function setupGates() {
@@ -29,32 +27,35 @@ function setupGates() {
 
 function setup() {
   // RENDERING
-  width = 1000;
-  height = 800;
   colorMode(HSB);
   noStroke();
 
   // CREATE CANVAS
-  createCanvas(width + 1, height + 1);
+  createCanvas(1000, 800);
 
   // DISABLE RIGHT CLICK CONTEXT MENU
   for (let element of document.getElementsByClassName("p5Canvas")) {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
-  createGate(Gates.And, 100, 100);
+  //createGate(Gates.And, 100, 100);
+  setupGates();
 }
 
+/***************/
+/** RENDERING **/
+/***************/
+
 function renderComponents() {
-  components.forEach((c) => c.render()); // Will also render connectors
+  state.gates.forEach((c) => c.render()); // Will also render connectors
 }
 
 function doComponentLogic() {
-  components.forEach((c) => c.logic());
+  state.gates.forEach((c) => c.logic());
 }
 
 function applyCursor() {
-  if (state.objects.some((c) => c.mouseIsOver && c.mouseIsOver(true))) {
+  if (state.all().some((c) => c.mouseIsOver && c.mouseIsOver(true))) {
     cursor(HAND);
   } else {
     cursor(ARROW);
@@ -69,6 +70,10 @@ function draw() {
 
   if (wire) wire.render();
 }
+
+/******************/
+/** MOUSE EVENTS **/
+/******************/
 
 function mouseDragged() {
   if (dragComponent) {
@@ -90,11 +95,11 @@ function mousePressed() {
   }
 
   // Handle click logic
-  for (let i = 0; i < state.objects.length; i++) {
-    const c = state.objects[i];
+  for (let i = 0; i < state.all().length; i++) {
+    const c = state.all()[i];
 
     // Begin-dragging
-    if (c.mouseIsOver && c.mouseIsOver() && c instanceof Component && mouseButton === LEFT) {
+    if (c.mouseIsOver && c.mouseIsOver() && c instanceof Gate && mouseButton === LEFT) {
       dragComponent = c;
       dragDeltaX = Math.abs(mouseX - dragComponent.x);
       dragDeltaY = Math.abs(mouseY - dragComponent.y);
@@ -103,12 +108,12 @@ function mousePressed() {
 
     // Handle wire creation
     if (c.mouseIsOver && c.mouseIsOver() && c.isClickable) {
-      if (c instanceof Connector && c.type === "output" && mouseButton === LEFT) {
+      if (c instanceof Pin && c.type === "output" && mouseButton === LEFT) {
         wire = new Wire(c, null);
         wire.on = c.on;
         break;
       }
-      if (c instanceof Connector && c.type === "input" && wire && mouseButton === LEFT) {
+      if (c instanceof Pin && c.type === "input" && wire && mouseButton === LEFT) {
         const clone = new Wire(wire.from, c);
         state.register(clone);
 
@@ -120,17 +125,18 @@ function mousePressed() {
         break;
       }
 
-      const result = c.onClick(mouseButton);
-      if (result && result instanceof Component) {
-        components.push(result);
-      }
+      c.onClick(mouseButton);
     }
   }
 }
 
+/*********************/
+/** KEYBOARD EVENTS **/
+/*********************/
+
 function keyTyped() {
-  for (let i = 0; i < state.objects.length; i++) {
-    const c = state.objects[i];
+  for (let i = 0; i < state.all().length; i++) {
+    const c = state.all()[i];
     if (c.mouseIsOver && c.mouseIsOver() && c.onKeyTyped && key != "d") {
       c.onKeyTyped(key);
     } else if (c.mouseIsOver && c.mouseIsOver() && c.onKeyTyped && key === "d") {
@@ -138,8 +144,6 @@ function keyTyped() {
       if (confirm("Do you wanna delete this gate?")) {
         c.delete();
         state.unregister(c);
-        const idx = components.indexOf(c);
-        components.splice(idx, 1);
       }
     }
   }

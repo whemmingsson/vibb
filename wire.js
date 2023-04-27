@@ -41,8 +41,6 @@ class Wire extends ComponentBase {
       strokeWeight(2);
       ellipse(mouseX, mouseY, 10, 10);
     }
-
-    console.log("Render wire with id", this.id);
   }
 
   onClick(button) {
