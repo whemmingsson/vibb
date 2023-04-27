@@ -3,14 +3,10 @@ class Pin extends ComponentBase {
         super(true, true, false, false);
         this.x = x;
         this.y = y;
-        this.w = Globals.ConnectorWidth;
-        this.h = h;
-
         this.parentComponent = parentComponent;
         this.type = type;
         this.on = false;
 
-        this.wires = [];
         this.inWires = [];
         this.outWires = [];
     }
@@ -95,8 +91,5 @@ class Pin extends ComponentBase {
         [...this.inWires, ...this.outWires].forEach((w) => {
             this.removeWire(w);
         });
-
-        //this.inWires = [];
-        //this.outWires = [];
     }
 }

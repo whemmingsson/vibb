@@ -52,22 +52,22 @@ class Gate extends ComponentBase {
     return output;
   }
 
-  removeInput(connector) {
-    const idx = this.inputs.findIndex((c) => c.id === connector.id);
+  removeInput(pin) {
+    const idx = this.inputs.findIndex((p) => p.id === pin.id);
     if (idx < 0) return;
 
     this.inputs.splice(idx, 1);
     this._positionAndScalePins(this.inputs);
-    state.unregister(connector);
+    state.unregister(pin);
   }
 
-  removeOutput(connector) {
-    const idx = this.outputs.findIndex((c) => c.id === connector.id);
+  removeOutput(pin) {
+    const idx = this.outputs.findIndex((p) => p.id === pin.id);
     if (idx < 0) return;
 
     this.outputs.splice(idx, 1);
     this._positionAndScalePins(this.outputs);
-    state.unregister(connector);
+    state.unregister(pin);
   }
 
   _renderRect() {

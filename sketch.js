@@ -47,7 +47,7 @@ function setup() {
 /***************/
 
 function renderComponents() {
-  state.gates.forEach((c) => c.render()); // Will also render connectors
+  state.gates.forEach((c) => c.render()); // Will also render pins
 }
 
 function doComponentLogic() {
@@ -117,7 +117,7 @@ function mousePressed() {
         const clone = new Wire(wire.from, c);
         state.register(clone);
 
-        // Register the wires on the connectors
+        // Register the wires on the pins
         wire.from.outWires.push(clone);
         c.inWires.push(clone);
 
