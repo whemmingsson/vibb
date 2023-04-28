@@ -167,6 +167,8 @@ function mousePressed() {
         break;
       }
 
+      // TODO: This clashes with click logic - it means there is no way of turning the button on by clicking...
+
       // Handle button-pin case
       if (c instanceof Button && mouseButton === LEFT) {
         wire = new Wire(c, null);
@@ -199,7 +201,7 @@ function mousePressed() {
 
       // Default case
       c.onClick(mouseButton);
-      positionAndScaleButtons(); // Hack. This should be here really.
+      positionAndScaleButtons(); // Hack. This should not be here really.
       handledClickOnObject = true;
     }
   }
