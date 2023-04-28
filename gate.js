@@ -28,13 +28,14 @@ class Gate extends ComponentBase {
   }
 
   _positionAndScalePins(pins) {
-    const availablePinHeight = Math.min(this.h / pins.length, 50);
+    const height = this.h / (pins.length + 1);
 
     pins.forEach((pin, idx) => {
+      const y = this.y + height * (idx + 1);
       pin.x = pin.type === "input" ? this.x : this.x + this.w;
-      pin.y = this.y + idx * availablePinHeight + availablePinHeight / 2;
-      pin.h = availablePinHeight - Globals.PinSpacing * 2;
-      pin.w = availablePinHeight - Globals.PinSpacing * 2;
+      pin.y = y;
+      pin.h = height - Globals.PinSpacing;
+      pin.w = height - Globals.PinSpacing;
     });
   }
 
@@ -86,7 +87,7 @@ class Gate extends ComponentBase {
 
       // Render ID for debugging
       textSize(this.h * 0.2);
-      text(this.id, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3));
+      text(this.id, this.x + this.w / 2, this.y + this.h / 2 + this.h * 0.3);
     }
   }
 
