@@ -20,12 +20,14 @@ const ColorScheme = {
   SignalOff: new Color(0, 360, 75),
   White: new Color(0, 0, 100),
   Black: new Color(0, 0, 0),
+  ClickArea: new Color(0, 0, 50),
 };
 
 const Globals = {
   PinSpacing: 2,
   StrokeWeight: 1,
   WireWeight: 2,
+  ButtonDiameter: 50,
 };
 
 function isPointOnLine(p, p1, p2) {

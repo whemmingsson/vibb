@@ -4,6 +4,7 @@ class State {
     this.pins = [];
     this.wires = [];
     this.buttons = [];
+    this.areas = [];
     this.objectCounter = 0;
   }
 
@@ -18,7 +19,10 @@ class State {
       this.wires.push(object);
     }
     if (object instanceof Button) {
-      this.wires.push(object);
+      this.buttons.push(object);
+    }
+    if (object instanceof ClickArea) {
+      this.areas.push(object);
     }
 
     this.objectCounter++;
@@ -52,10 +56,13 @@ class State {
     if (object instanceof Button) {
       this._maybeUnregister(this.buttons, object, "buttons");
     }
+    if (object instanceof ClickArea) {
+      this._maybeUnregister(this.areas, object, "area");
+    }
   }
 
   all() {
-    return [...this.gates, ...this.pins, ...this.wires, ...this.buttons];
+    return [...this.gates, ...this.pins, ...this.wires, ...this.buttons, ...this.areas];
   }
 }
 
