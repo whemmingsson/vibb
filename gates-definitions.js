@@ -19,6 +19,7 @@ const Gates = {
       if (signals.length === 2) {
         return signals[0] ^ signals[1];
       }
+      console.log("Found unsupported logic operaion for gate XOR");
       return false; // Unsupported case
     },
   },
@@ -30,6 +31,7 @@ const Gates = {
       if (signals.length === 1) {
         return !signals[0];
       }
+      console.log("Found unsupported logic operaion for gate NOT");
       return false; // Unsupported case
     },
   },
@@ -53,6 +55,7 @@ const Gates = {
       if (signals.length === 2) {
         return !(signals[0] ^ signals[1]);
       }
+      console.log("Found unsupported logic operaion for gate XNOR");
       return false; // Unsupported case,
     },
   },

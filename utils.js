@@ -19,10 +19,13 @@ const ColorScheme = {
   SignalOn: new Color(80, 360, 95),
   SignalOff: new Color(0, 360, 75),
   White: new Color(0, 0, 100),
+  Black: new Color(0, 0, 0),
 };
 
 const Globals = {
   PinSpacing: 2,
+  StrokeWeight: 1,
+  WireWeight: 2,
 };
 
 function isPointOnLine(p, p1, p2) {

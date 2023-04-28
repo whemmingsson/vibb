@@ -14,6 +14,7 @@ class Wire extends ComponentBase {
   }
 
   _applyStroke() {
+    strokeWeight(Globals.WireWeight);
     if (this.mouseIsOver()) {
       stroke(0, 0, 100);
       return;

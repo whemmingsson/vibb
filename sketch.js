@@ -17,13 +17,13 @@ function createGate(gateDef, x, y) {
 
 function setupGates() {
   // SETUP GATES
-  createGate(Gates.And, 100, 100);
+  createGate(Gates.And, 180, 100);
   createGate(Gates.Nand, 550, 100);
-  createGate(Gates.Or, 100, 250);
+  createGate(Gates.Or, 180, 250);
   createGate(Gates.Nor, 550, 250);
-  createGate(Gates.Xor, 100, 400);
+  createGate(Gates.Xor, 180, 400);
   createGate(Gates.Xnor, 550, 400);
-  createGate(Gates.Not, 100, 550);
+  createGate(Gates.Not, 180, 550);
 }
 
 function setup() {
@@ -39,31 +39,27 @@ function setup() {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
-  // Debug and test setup
-  const g1 = createGate(Gates.Not, 100, 100);
-  const g2 = createGate(Gates.Not, 400, 100);
+  setupGates();
+}
 
-  // Setup a wire
-  const wire = new Wire(g1.outputs[0], g2.inputs[0]);
-  state.register(wire);
+/****************/
+/** GATE LOGIC **/
+/****************/
 
-  // Register the wires on the pins
-  g1.outputs[0].outWires.push(wire);
-  g2.inputs[0].inWires.push(wire);
-
-  //setupGates();
+function doComponentLogic() {
+  state.gates.forEach((c) => c.logic());
 }
 
 /***************/
 /** RENDERING **/
 /***************/
 
-function renderComponents() {
+function renderGates() {
   state.gates.forEach((c) => c.render());
 }
 
-function doComponentLogic() {
-  state.gates.forEach((c) => c.logic());
+function renderButtons() {
+  state.buttons.forEach((c) => c.render());
 }
 
 function applyCursor() {
@@ -77,7 +73,8 @@ function applyCursor() {
 function draw() {
   background(25);
   doComponentLogic();
-  renderComponents();
+  renderButtons();
+  renderGates();
   applyCursor();
 
   if (wire) wire.render();

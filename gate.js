@@ -19,11 +19,11 @@ class Gate extends ComponentBase {
   }
 
   _applyBorder() {
-    if (this.mouseIsOver(false)) {
-      strokeWeight(2);
-      stroke(100, 0, 100);
+    strokeWeight(Globals.StrokeWeight);
+    if (this.mouseIsOver()) {
+      ColorScheme.White.applyStroke();
     } else {
-      noStroke();
+      ColorScheme.Black.applyStroke();
     }
   }
 
@@ -32,7 +32,7 @@ class Gate extends ComponentBase {
 
     pins.forEach((pin, idx) => {
       const y = this.y + height * (idx + 1);
-      pin.x = pin.type === "input" ? this.x : this.x + this.w;
+      pin.x = pin.type === "input" ? this.x - Globals.StrokeWeight / 2 : this.x + this.w + Globals.StrokeWeight / 2;
       pin.y = y;
       pin.h = height - Globals.PinSpacing;
       pin.w = height - Globals.PinSpacing;
@@ -40,14 +40,14 @@ class Gate extends ComponentBase {
   }
 
   addInput() {
-    const input = new Pin(this.x, 0, 0, this, "input");
+    const input = new Pin(this.x, 0, this, "input");
     this.inputs.push(input);
     this._positionAndScalePins(this.inputs);
     return input;
   }
 
   addOutput() {
-    const output = new Pin(this.x + this.w, 0, 0, this, "output");
+    const output = new Pin(this.x + this.w, 0, this, "output");
     this.outputs.push(output);
     this._positionAndScalePins(this.outputs);
     return output;
@@ -74,7 +74,7 @@ class Gate extends ComponentBase {
   _renderRect() {
     this.color.applyFill();
     this._applyBorder();
-    rect(this.x, this.y, this.w, this.h);
+    rect(this.x, this.y, this.w, this.h, this.h * 0.1);
   }
 
   _renderLabel() {
