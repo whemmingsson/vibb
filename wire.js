@@ -120,36 +120,19 @@ class Wire extends ComponentBase {
       return;
     }
 
-    // TODO: This only works for 1 anchor or anchors added to the right of the previous one
-    // Solution is to split the line into line segments and use these to render the lines instead.
-    // Detect hover on a specific segment, and then create the anchor point on that, effectively 
-    // splitting the line segment into two new segments. 
-    this.anchors.push({ x: mouseX, y: mouseY, anchor: true });
-    return;
-
-    // New approach (that was bad)
-    let selectedLineSegment = this.lineSegments.length === 0
-      ? new LineSegment(this.from.x, this.from.y, this.to.x, this.to.y)
-      : this.lineSegments.find(ls => ls.mouseIsOver());
-
-    if (selectedLineSegment) {
-      let idx = this.lineSegments.indexOf(selectedLineSegment);
-      let newSegments = selectedLineSegment.split(mouseX, mouseY);
-      if (newSegments.length === 0) {
-        console.log("Did not create two new segments");
-        return;
-      }
-      // NOTE: This will only work for the first split
-      this.lineSegments.push(newSegments[0]);
-      this.lineSegments.push(newSegments[1]);
-      this.anchors.push({ x: mouseX, y: mouseY });
-
-      console.log(idx, newSegments);
-    }
-    else {
-      throw Error("Could not find a line segment");
+    // Only good for when there are no anchors
+    if (this.anchors.length === 0) {
+      this.anchors.push({ x: mouseX, y: mouseY, anchor: true });
+      return;
     }
 
+    // Find the line segment that the mouse is over
+    let selectedLineSegment = this._createTemporarySegments().find(ls => this._mouseIsOverSegment(ls));
+    const tempAnchors = [{ x: this.from.x, y: this.from.y }, ...this.anchors, { x: this.to.x, y: this.to.y }];
 
+    // Find where to insert the anchor in the list of anchors
+    let previousAnchor = tempAnchors.find(a => a.x === selectedLineSegment.x1 && a.y === selectedLineSegment.y1);
+    let idx = tempAnchors.indexOf(previousAnchor);
+    this.anchors.splice(idx, 0, { x: mouseX, y: mouseY });
   }
 }
