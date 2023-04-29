@@ -11,61 +11,99 @@ class Wire extends ComponentBase {
 
     // Will represent branches of this wire
     this.anchors = [];
-    this.points = [];
   }
 
   _applyStroke() {
     strokeWeight(Globals.WireWeight);
     if (this.mouseIsOver()) {
-      stroke(0, 0, 100);
+      ColorScheme.White.applyStroke();
       return;
     }
 
+    this._getSignalColor().applyStroke();
+  }
+
+  _createTemporarySegments() {
+    let segments = [];
+    segments.push({ x1: this.from.x, y1: this.from.y, x2: this.anchors[0].x, y2: this.anchors[0].y });
+    for (let i = 0; i < this.anchors.length - 1; i++) {
+      segments.push({ x1: this.anchors[i].x, y1: this.anchors[i].y, x2: this.anchors[i + 1].x, y2: this.anchors[i + 1].y });
+    }
+    segments.push({ x1: this.anchors[this.anchors.length - 1].x, y1: this.anchors[this.anchors.length - 1].y, x2: this.to.x, y2: this.to.y });
+    return segments;
+  }
+
+  _mouseIsOverSegment(segment) {
+    return isPointOnLine({ x: mouseX, y: mouseY }, { x: segment.x1, y: segment.y1 }, { x: segment.x2, y: segment.y2 })
+  }
+
+  mouseIsOver() {
+    // Default scenario
+    if (this.anchors.length === 0) {
+      if (this.from && this.to) {
+        return isPointOnLine({ x: mouseX, y: mouseY }, { x: this.from.x, y: this.from.y }, { x: this.to.x, y: this.to.y });
+      }
+      return false;
+    }
+
+    // Now we need to check indvidual line segments. 
+    // NOTE: This is required for the cursor / moving anchor functionality
+    let segments = this._createTemporarySegments();
+    for (let i = 0; i < segments.length; i++) {
+      if (this._mouseIsOverSegment(segments[i])) return true;
+    }
+
+    return false;
+  }
+
+  _applyOnOffStrokeColor() {
     if (this.on) ColorScheme.SignalOn.applyStroke();
     else ColorScheme.SignalOff.applyStroke();
   }
 
-  mouseIsOver() {
-    if (this.from && this.to) {
-      return isPointOnLine({ x: mouseX, y: mouseY }, { x: this.from.x, y: this.from.y }, { x: this.to.x, y: this.to.y });
+  _renderAnchorPoint(x, y, color) {
+    if (color) {
+      color.applyFill();
+      color.applyStroke();
     }
-    return false;
-  }
-
-  _renderAnchorPoint(x, y) {
-
-    strokeWeight(2);
+    strokeWeight(Globals.StrokeWeight);
     ellipse(x, y, 10, 10);
   }
 
-  _renderLineWithAnchors() {
-    const points = [];
-    points.push({ x: this.from.x, y: this.from.y });
-    points.push(...this.anchors);
-    points.push({ x: this.to.x, y: this.to.y });
-    for (let i = 0; i < points.length - 1; i++) {
-      this._applyStroke();
-      strokeWeight(5);
-      let p1 = points[i];
-      let p2 = points[i + 1];
-      line(p1.x, p1.y, p2.x, p2.y);
-      if (p1.anchor) {
-        ColorScheme.SignalOff.applyFill();
-        ColorScheme.Black.applyStroke();
-        strokeWeight(Globals.strokeWeight);
-        this._renderAnchorPoint(p1.x, p1.y);
+  _renderLine(x1, y1, x2, y2) {
+    strokeWeight(Globals.WireWeight);
+    line(x1, y1, x2, y2);
+  }
+
+  _getSignalColor() {
+    return this.on ? ColorScheme.SignalOn : ColorScheme.SignalOff;
+  }
+
+  _renderLineSegments() {
+    let segments = this._createTemporarySegments();
+    segments.forEach(s => {
+      if (this._mouseIsOverSegment(s)) {
+        ColorScheme.White.applyStroke();
       }
-    }
+      else {
+        this._applyOnOffStrokeColor();
+      }
+      this._renderLine(s.x1, s.y1, s.x2, s.y2);
+    })
+  }
+
+  _renderAnchorPoints() {
+    this.anchors.forEach(a => this._renderAnchorPoint(a.x, a.y, this._getSignalColor()));
   }
 
   render() {
-    this._applyStroke();
-    strokeWeight(5);
     if (this.anchors.length === 0) {
+      this._applyStroke();
       line(this.from.x, this.from.y, this.to ? this.to.x : mouseX, this.to ? this.to.y : mouseY);
     }
     else {
-      this._renderLineWithAnchors();
+      this._renderLineSegments();
+      this._renderAnchorPoints();
     }
 
     if (this.mouseIsOver()) {
@@ -75,13 +113,43 @@ class Wire extends ComponentBase {
     }
   }
 
-
-
   onClick(button) {
     if (button === RIGHT) {
       this.from.removeWire(this);
       this.to.removeWire(this);
+      return;
     }
-    this.anchors.push({ x: mouseX, y: mouseY, anchor: true })
+
+    // TODO: This only works for 1 anchor or anchors added to the right of the previous one
+    // Solution is to split the line into line segments and use these to render the lines instead.
+    // Detect hover on a specific segment, and then create the anchor point on that, effectively 
+    // splitting the line segment into two new segments. 
+    this.anchors.push({ x: mouseX, y: mouseY, anchor: true });
+    return;
+
+    // New approach (that was bad)
+    let selectedLineSegment = this.lineSegments.length === 0
+      ? new LineSegment(this.from.x, this.from.y, this.to.x, this.to.y)
+      : this.lineSegments.find(ls => ls.mouseIsOver());
+
+    if (selectedLineSegment) {
+      let idx = this.lineSegments.indexOf(selectedLineSegment);
+      let newSegments = selectedLineSegment.split(mouseX, mouseY);
+      if (newSegments.length === 0) {
+        console.log("Did not create two new segments");
+        return;
+      }
+      // NOTE: This will only work for the first split
+      this.lineSegments.push(newSegments[0]);
+      this.lineSegments.push(newSegments[1]);
+      this.anchors.push({ x: mouseX, y: mouseY });
+
+      console.log(idx, newSegments);
+    }
+    else {
+      throw Error("Could not find a line segment");
+    }
+
+
   }
 }

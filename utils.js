@@ -21,17 +21,19 @@ const ColorScheme = {
   White: new Color(0, 0, 100),
   Black: new Color(0, 0, 0),
   ClickArea: new Color(0, 0, 50),
+  Debug: new Color(250, 360, 100),
 };
 
 const Globals = {
   PinSpacing: 2,
   StrokeWeight: 1,
-  WireWeight: 2,
+  WireWeight: 3,
   ButtonDiameter: 50,
 };
 
-function isPointOnLine(p, p1, p2) {
-  const threshold = 2000;
+function isPointOnLine(p, p1, p2, threshold) {
+  if (!threshold)
+    threshold = 1000;
 
   const dxc = p.x - p1.x;
   const dyc = p.y - p1.y;
