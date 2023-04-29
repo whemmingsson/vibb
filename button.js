@@ -45,6 +45,11 @@ class Button extends ComponentBase {
     return isWithinCircle();
   }
 
+  toggle() {
+    this.on = !this.on;
+    this.outWires.forEach(wire => wire.on = this.on);
+  }
+
   render() {
     this._renderWires();
     this._applyBorder();

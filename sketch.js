@@ -119,95 +119,73 @@ function mouseDragged() {
 function mouseReleased() {
   if (dragComponent) {
     dragComponent = null;
+    return;
+  }
+
+  let handledReleaseOnObject = false;
+
+  const pressableObjects = state.all().filter(o => o.mouseIsOver && o.mouseIsOver());
+  for (let i = 0; i < pressableObjects.length; i++) {
+    const c = pressableObjects[i];
+
+    // Create wire
+    if (c instanceof Pin && c.type === "input" && wire && mouseButton === LEFT) {
+      const clone = new Wire(wire.from, c);
+      state.register(clone);
+
+      // Register the wires on the pins
+      wire.from.outWires.push(clone);
+      c.inWires.push(clone);
+
+      wire = null;
+      handledReleaseOnObject = true;
+      break;
+    }
+
+    // Toggle button signal
+    if (c instanceof Button && mouseButton === LEFT) {
+      c.toggle();
+    }
+  }
+
+  // Stop creating wire
+  if (!handledReleaseOnObject) {
+    wire = null;
   }
 }
 
 function mousePressed() {
-  // Cancel creating wire
-  if (mouseButton === RIGHT && wire) {
-    wire = undefined;
-    return;
-  }
-
   // Handle click logic
-  let handledClickOnObject = false;
-  for (let i = 0; i < state.all().length; i++) {
-    const c = state.all()[i];
+  const pressableObjects = state.all().filter(o => o.mouseIsOver && o.mouseIsOver());
+  for (let i = 0; i < pressableObjects.length; i++) {
+    const c = pressableObjects[i];
 
     // Begin-dragging
     // To include dragability for buttons: || c instanceof Button
-    if (c.mouseIsOver && c.mouseIsOver() && c instanceof Gate && mouseButton === LEFT) {
+    if (c instanceof Gate && mouseButton === LEFT) {
       dragComponent = c;
       dragDeltaX = Math.abs(mouseX - dragComponent.x);
       dragDeltaY = Math.abs(mouseY - dragComponent.y);
-      handledClickOnObject = true;
       break;
     }
 
-    if (c.mouseIsOver && c.mouseIsOver() && c.isClickable) {
-      // Handle wire creation
-
-      // Handle pin-pin case
-      if (c instanceof Pin && c.type === "output" && mouseButton === LEFT) {
-        wire = new Wire(c, null);
-        wire.on = c.on;
-        handledClickOnObject = true;
-        break;
-      }
-      if (c instanceof Pin && c.type === "input" && wire && mouseButton === LEFT) {
-        const clone = new Wire(wire.from, c);
-        state.register(clone);
-
-        // Register the wires on the pins
-        wire.from.outWires.push(clone);
-        c.inWires.push(clone);
-
-        wire = undefined;
-        handledClickOnObject = true;
-        break;
-      }
-
-      // TODO: This clashes with click logic - it means there is no way of turning the button on by clicking...
-
-      // Handle button-pin case
-      if (c instanceof Button && mouseButton === LEFT) {
-        wire = new Wire(c, null);
-        wire.on = c.on;
-        handledClickOnObject = true;
-        break;
-      }
-
-      // Handle button-pin case
-      if (c instanceof Pin && wire && mouseButton === LEFT && c.type === "input") {
-        const clone = new Wire(wire.from, c);
-        state.register(clone);
-
-        // Register the wires on the pins
-        wire.from.outWires.push(clone);
-        c.inWires.push(clone);
-
-        wire = undefined;
-        handledClickOnObject = true;
-        break;
-      }
-
-      if (c instanceof ClickArea && mouseButton === LEFT) {
-        console.log("Clicked on input area");
-        const btn = new Button(mouseX, mouseY, Globals.ButtonDiameter, Globals.ButtonDiameter);
-        state.register(btn);
-        positionAndScaleButtons();
-        break;
-      }
-
-      // Default case
-      c.onClick(mouseButton);
-      positionAndScaleButtons(); // Hack. This should not be here really.
-      handledClickOnObject = true;
+    // Handle wire creation
+    if (((c instanceof Pin && c.type === "output") || c instanceof Button) && mouseButton === LEFT) {
+      wire = new Wire(c, null);
+      wire.on = c.on;
+      break;
     }
-  }
 
-  // Click on something outside of any simulation objects
-  if (!handledClickOnObject) {
+    // Handle clicking on the input area
+    if (c instanceof ClickArea && mouseButton === LEFT) {
+      state.register(new Button(mouseX, mouseY, Globals.ButtonDiameter, Globals.ButtonDiameter));
+      positionAndScaleButtons();
+      break;
+    }
+
+    // Default case
+    c.onClick(mouseButton);
+    positionAndScaleButtons(); // Hack. This should not be here really.
   }
 }
 
@@ -216,16 +194,14 @@ function mousePressed() {
 /*********************/
 
 function keyTyped() {
-  for (let i = 0; i < state.all().length; i++) {
-    const c = state.all()[i];
-    if (c.mouseIsOver && c.mouseIsOver() && c.onKeyTyped && key != "d") {
+  const interactiveObjects = state.all().filter(o => o.mouseIsOver && o.mouseIsOver() && o.onKeyTyped);
+  for (let i = 0; i < interactiveObjects.length; i++) {
+    const c = interactiveObjects[i];
+    if (key != "d") {
       c.onKeyTyped(key);
-    } else if (c.mouseIsOver && c.mouseIsOver() && c.onKeyTyped && key === "d") {
-      // Delete this
-      if (confirm("Do you wanna delete this gate?")) {
-        c.delete();
-        state.unregister(c);
-      }
+    } else if (confirm("Do you wanna delete this gate?")) {
+      c.delete();
+      state.unregister(c);
     }
   }
 }
