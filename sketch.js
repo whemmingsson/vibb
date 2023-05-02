@@ -1,7 +1,7 @@
 const board = new Breadboard();
 
 function setup() {
-  createCanvas(1000, 800);
+  createCanvas(1360, 800);
   board.onSetup();
 
   // DISABLE RIGHT CLICK CONTEXT MENU
@@ -10,8 +10,18 @@ function setup() {
   }
 }
 
-function draw() { board.onDraw(); }
-function mousePressed() { board.onMousePressed(); }
-function mouseDragged() { board.onMouseDragged(); }
-function mouseReleased() { board.onMouseReleased(); }
-function keyTyped() { board.onKeyTyped() }
+function draw() {
+  board.onDraw();
+}
+function mousePressed() {
+  board.onMousePressed();
+}
+function mouseDragged() {
+  board.onMouseDragged();
+}
+function mouseReleased() {
+  board.onMouseReleased();
+}
+function keyTyped() {
+  board.onKeyTyped();
+}
