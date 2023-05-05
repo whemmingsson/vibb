@@ -10,7 +10,7 @@ class Breadboard {
   }
 
   _createGate(gateDef, x, y) {
-    state.register(new Gate(x, y, 140, 60, gateDef));
+    return state.register(new Gate(x, y, 140, 60, gateDef));
   }
 
   _setupGates() {
@@ -23,6 +23,15 @@ class Breadboard {
     create(Gates.Nand, 800, 10);
     create(Gates.Nor, 980, 10);
     create(Gates.Xnor, 1160, 10);
+
+    // Lab and dev gates
+    const g1 = create(Gates.Not, 300, 200);
+    const g2 = create(Gates.Not, 600, 200);
+    console.log(g1, g2);
+    const wire = new Wire(g1.outputs[0], g2.inputs[0]);
+    state.register(wire);
+    g1.outputs[0].outWires.push(wire);
+    g2.inputs[0].inWires.push(wire);
   }
 
   _doGateLogic() {

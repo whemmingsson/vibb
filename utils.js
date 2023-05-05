@@ -8,10 +8,12 @@ class Color {
 
   applyFill() {
     fill(this.h, this.s, this.b, this.a);
+    return this;
   }
 
   applyStroke() {
     stroke(this.h, this.s, this.b, this.a);
+    return this;
   }
 }
 
@@ -29,11 +31,11 @@ const Globals = {
   StrokeWeight: 1,
   WireWeight: 3,
   ButtonDiameter: 50,
+  AnchorDiameter: 10,
 };
 
 function isPointOnLine(p, p1, p2, threshold) {
-  if (!threshold)
-    threshold = 1000;
+  if (!threshold) threshold = 1000;
 
   const dxc = p.x - p1.x;
   const dyc = p.y - p1.y;

@@ -27,6 +27,7 @@ class State {
 
     this.objectCounter++;
     object.id = this.objectCounter;
+    return object;
   }
 
   _maybeUnregister(list, object, listName) {
