@@ -29,8 +29,7 @@ class Button extends ComponentBase {
   }
 
   _renderWires() {
-    const wires = [...this.outWires]; // Only render on the "out" side to prevent double rendering
-    wires.forEach((w) => w.render());
+    this.outWires.forEach((w) => w.render());
   }
 
   updatePosition(x, y) {
@@ -47,7 +46,7 @@ class Button extends ComponentBase {
 
   toggle() {
     this.on = !this.on;
-    this.outWires.forEach(wire => wire.on = this.on);
+    this.outWires.forEach((wire) => (wire.on = this.on));
   }
 
   render() {
@@ -65,6 +64,13 @@ class Button extends ComponentBase {
   onClick(mouseButton) {
     if (mouseButton === RIGHT) {
       this.delete();
+    }
+  }
+
+  removeWire(wire) {
+    const outWireIdx = this.outWires.findIndex((w) => w.id === wire.id);
+    if (outWireIdx >= 0) {
+      this.outWires.splice(outWireIdx, 1);
     }
   }
 }
