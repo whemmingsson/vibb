@@ -15,25 +15,33 @@ class Color {
     stroke(this.h, this.s, this.b, this.a);
     return this;
   }
+
+  applyBackground() {
+    background(this.h, this.s, this.b, this.a);
+    return this;
+  }
 }
 
 const ColorScheme = {
-  SignalOn: new Color(80, 360, 95),
-  SignalOff: new Color(0, 360, 75),
+  SignalOn: new Color(0, 0, 100),
+  SignalOff: new Color(205, 77, 57),
   White: new Color(0, 0, 100),
   Black: new Color(0, 0, 0),
   ClickArea: new Color(0, 0, 50),
   Debug: new Color(250, 360, 100),
-  GridLine: new Color(0, 0, 30),
+  GridLine: new Color(205, 77, 62),
+  Gate: new Color(0, 0, 0, 0),
+  Background: new Color(205, 77, 57),
 };
 
 const Globals = {
   PinSpacing: 2,
-  StrokeWeight: 1,
-  WireWeight: 3,
+  StrokeWeight: 2,
+  WireWeight: 1,
   ButtonDiameter: 60,
   AnchorDiameter: 10,
   GridCellSize: 20,
+  GridLineWeight: 1,
   SnapToGrid: true,
 };
 

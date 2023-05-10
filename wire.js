@@ -24,6 +24,9 @@ class Wire extends ComponentBase {
     }
 
     this._getSignalColor().applyStroke();
+    if (this.on) {
+      strokeWeight(Globals.WireWeight + 2);
+    }
   }
 
   _createTemporarySegments() {
@@ -88,7 +91,7 @@ class Wire extends ComponentBase {
   }
 
   _getSignalColor() {
-    return this.on ? ColorScheme.SignalOn : ColorScheme.SignalOff;
+    return this.on ? ColorScheme.SignalOn : ColorScheme.SignalOn;
   }
 
   _renderLineSegments() {
@@ -97,7 +100,7 @@ class Wire extends ComponentBase {
       if (this._mouseIsOverSegment(s)) {
         ColorScheme.White.applyStroke();
       } else {
-        this._applyOnOffStrokeColor();
+        ColorScheme.White.applyStroke();
       }
       this._renderLine(s.x1, s.y1, s.x2, s.y2);
     });

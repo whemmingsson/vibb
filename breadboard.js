@@ -47,6 +47,7 @@ class Breadboard {
 
   _renderGrid() {
     ColorScheme.GridLine.applyStroke();
+    strokeWeight(Globals.GridLineWeight);
     for (let x = 0; x < width; x += Globals.GridCellSize) {
       line(x, 0, x, height);
     }
@@ -81,7 +82,7 @@ class Breadboard {
   }
 
   onDraw() {
-    background(25);
+    ColorScheme.Background.applyBackground();
 
     this.inputArea.render();
 

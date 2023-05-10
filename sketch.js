@@ -6,6 +6,7 @@ let loadButton;
 function setup() {
   const canvas = createCanvas(1360, 800);
   canvas.parent("sketch-holder");
+  smooth();
   board.onSetup();
 
   // DISABLE RIGHT CLICK CONTEXT MENU

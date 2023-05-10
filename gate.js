@@ -3,7 +3,6 @@ class Gate extends ComponentBase {
     super(true, true, true, true);
     this.x = x;
     this.y = y;
-    this.color = new Color(50, 360, 100, 0.9);
     this.w = w ? w : 100;
     this.h = h ? h : 100;
     this.inputs = [];
@@ -23,7 +22,7 @@ class Gate extends ComponentBase {
     if (this.mouseIsOver()) {
       ColorScheme.White.applyStroke();
     } else {
-      ColorScheme.Black.applyStroke();
+      ColorScheme.White.applyStroke();
     }
   }
 
@@ -72,7 +71,7 @@ class Gate extends ComponentBase {
   }
 
   _renderRect() {
-    this.color.applyFill();
+    ColorScheme.Gate.applyFill();
     this._applyBorder();
     rect(this.x, this.y, this.w, this.h, this.h * 0.1);
   }
@@ -80,14 +79,15 @@ class Gate extends ComponentBase {
   _renderLabel() {
     if (this.gate && this.gate.label) {
       noStroke();
-      fill(0);
+      ColorScheme.White.applyFill();
       textAlign(CENTER);
-      textSize(this.h * 0.3);
-      text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.3) / 2.5);
+      textSize(this.h * 0.5);
+      textFont('Gochi Hand');
+      text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.5) / 2.9);
 
       // Render ID for debugging
-      textSize(this.h * 0.2);
-      text(this.id, this.x + this.w / 2, this.y + this.h / 2 + this.h * 0.3);
+      //textSize(this.h * 0.2);
+      //text(this.id, this.x + this.w / 2, this.y + this.h / 2 + this.h * 0.3);
     }
   }
 

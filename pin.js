@@ -16,7 +16,7 @@ class Pin extends ComponentBase {
     if (this.mouseIsOver()) {
       ColorScheme.White.applyStroke();
     } else {
-      ColorScheme.Black.applyStroke();
+      ColorScheme.White.applyStroke();
     }
   }
 
