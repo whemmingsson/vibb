@@ -96,4 +96,13 @@ class Pin extends ComponentBase {
       w.to.removeWire(w);
     });
   }
+
+  reduce() {
+    return {
+      id: this.id,
+      x: this.x,
+      y: this.y,
+      type: this.type
+    };
+  }
 }

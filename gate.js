@@ -157,4 +157,17 @@ class Gate extends ComponentBase {
     const clone = new Gate(this.x, this.y + this.h + 20, this.w, this.h, this.gate);
     state.register(clone);
   }
+
+  reduce() {
+    return {
+      id: this.id,
+      x: this.x,
+      y: this.y,
+      w: this.w,
+      h: this.h,
+      gate: this.gate,
+      inputs: this.inputs.map((i) => i.reduce()),
+      outputs: this.outputs.map((o) => o.reduce())
+    };
+  }
 }

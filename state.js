@@ -65,6 +65,11 @@ class State {
   all() {
     return [...this.gates, ...this.pins, ...this.wires, ...this.buttons, ...this.areas];
   }
+
+  toJson() {
+    return JSON.stringify({ gates: this.gates.map(g => g.reduce()) });
+  }
+
 }
 
 // Global state of all simulation objects
