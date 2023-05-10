@@ -11,6 +11,9 @@ class Wire extends ComponentBase {
 
     // Will represent branches of this wire
     this.anchors = [];
+
+    // Will represent the anchor that is currently being dragged
+    this.draggingAnchor = null;
   }
 
   _applyStroke() {
@@ -104,6 +107,10 @@ class Wire extends ComponentBase {
     this.anchors.forEach((a) => this._renderAnchorPoint(a.x, a.y, this._getSignalColor()));
   }
 
+  _getMouseOverAnchor() {
+    return this.anchors.find((a) => this._mouseIsOverAnchor(a));
+  }
+
   render() {
     if (this.anchors.length === 0) {
       this._applyStroke();
@@ -128,6 +135,11 @@ class Wire extends ComponentBase {
       return;
     }
 
+    // If the mouse is over an anchor, we don't want to create a new anchor
+    if (this._getMouseOverAnchor()) {
+      return;
+    }
+
     // Only good for when there are no anchors
     if (this.anchors.length === 0) {
       this.anchors.push({ x: mouseX, y: mouseY, anchor: true });
@@ -135,20 +147,32 @@ class Wire extends ComponentBase {
     }
 
     // Find the line segment that the mouse is over
-    let selectedLineSegment = this._createTemporarySegments().find((ls) => this._mouseIsOverSegment(ls));
+    const selectedLineSegment = this._createTemporarySegments().find((ls) => this._mouseIsOverSegment(ls));
     const tempAnchors = [{ x: this.from.x, y: this.from.y }, ...this.anchors, { x: this.to.x, y: this.to.y }];
 
     // Find where to insert the anchor in the list of anchors
-    let previousAnchor = tempAnchors.find((a) => a.x === selectedLineSegment.x1 && a.y === selectedLineSegment.y1);
-    let idx = tempAnchors.indexOf(previousAnchor);
+    const previousAnchor = tempAnchors.find((a) => a.x === selectedLineSegment.x1 && a.y === selectedLineSegment.y1);
+    const idx = tempAnchors.indexOf(previousAnchor);
     this.anchors.splice(idx, 0, { x: mouseX, y: mouseY });
   }
 
   /* These functions should ideally belong to a new Anchor class */
 
-  onMousePressed() {}
+  onMousePressed() {
+    const anchor = this.anchors.find((a) => this._mouseIsOverAnchor(a));
+    if (!anchor) return;
 
-  onMouseDragged() {}
+    this.draggingAnchor = anchor;
+  }
 
-  onMouseReleased() {}
+  onMouseDragged() {
+    if (!this.draggingAnchor) return;
+
+    this.draggingAnchor.x = mouseX;
+    this.draggingAnchor.y = mouseY;
+  }
+
+  onMouseReleased() {
+    this.draggingAnchor = null;
+  }
 }

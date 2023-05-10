@@ -116,12 +116,16 @@ class Breadboard {
       c.onClick(mouseButton);
       this._positionAndScaleButtons();
     }
+
+    state.wires.forEach((w) => w.onMousePressed());
   }
 
   onMouseDragged() {
     if (this.dragComponent) {
       this.dragComponent.updatePosition(mouseX - this.dragDeltaX, mouseY - this.dragDeltaY);
     }
+
+    state.wires.forEach((w) => w.onMouseDragged());
   }
 
   onMouseReleased() {
@@ -160,6 +164,8 @@ class Breadboard {
     if (!handledReleaseOnObject) {
       this.wire = null;
     }
+
+    state.wires.forEach((w) => w.onMouseReleased());
   }
 
   onKeyTyped() {
