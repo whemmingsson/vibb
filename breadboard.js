@@ -27,7 +27,6 @@ class Breadboard {
     // Lab and dev gates
     const g1 = create(Gates.Not, 300, 200);
     const g2 = create(Gates.Not, 600, 200);
-    console.log(g1, g2);
     const wire = new Wire(g1.outputs[0], g2.inputs[0]);
     state.register(wire);
     g1.outputs[0].outWires.push(wire);
@@ -44,6 +43,16 @@ class Breadboard {
 
   _renderButtons() {
     state.buttons.forEach((c) => c.render());
+  }
+
+  _renderGrid() {
+    ColorScheme.GridLine.applyStroke();
+    for (let x = 0; x < width; x += Globals.GridCellSize) {
+      line(x, 0, x, height);
+    }
+    for (let y = 0; y < height; y += Globals.GridCellSize) {
+      line(0, y, width, y);
+    }
   }
 
   _positionAndScaleButtons() {
@@ -75,6 +84,8 @@ class Breadboard {
     background(25);
 
     this.inputArea.render();
+
+    this._renderGrid();
 
     this._doGateLogic();
     this._renderButtons();
@@ -130,6 +141,10 @@ class Breadboard {
 
   onMouseReleased() {
     if (this.dragComponent) {
+      if (Globals.SnapToGrid) {
+        const p = getSnapToGridPoint(this.dragComponent.x, this.dragComponent.y);
+        this.dragComponent.updatePosition(p.x, p.y);
+      }
       this.dragComponent = null;
       return;
     }

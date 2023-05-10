@@ -24,14 +24,17 @@ const ColorScheme = {
   Black: new Color(0, 0, 0),
   ClickArea: new Color(0, 0, 50),
   Debug: new Color(250, 360, 100),
+  GridLine: new Color(0, 0, 30),
 };
 
 const Globals = {
   PinSpacing: 2,
   StrokeWeight: 1,
   WireWeight: 3,
-  ButtonDiameter: 50,
+  ButtonDiameter: 60,
   AnchorDiameter: 10,
+  GridCellSize: 20,
+  SnapToGrid: true,
 };
 
 function isPointOnLine(p, p1, p2, threshold) {
@@ -47,4 +50,10 @@ function isPointOnLine(p, p1, p2, threshold) {
 
   if (Math.abs(dxl) >= Math.abs(dyl)) return dxl > 0 ? p1.x <= p.x && p.x <= p2.x : p2.x <= p.x && p.x <= p1.x;
   else return dyl > 0 ? p1.y <= p.y && p.y <= p2.y : p2.y <= p.y && p.y <= p1.y;
+}
+
+function getSnapToGridPoint(x, y) {
+  const xMod = x % Globals.GridCellSize;
+  const yMod = y % Globals.GridCellSize;
+  return { x: x - xMod, y: y - yMod };
 }
