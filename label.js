@@ -29,8 +29,8 @@ class Label extends ComponentBase {
 
     _createInput() {
         this.input = createInput(this.text);
-        this.input.position(this.x, this.y);
-        this.input.size(Math.max(this.w, 100));
+        this.input.position(this.x + 2, this.y + 2);
+        this.input.size(Math.max(this.w + 5, 100), this.h * 1.1);
         this.input.style('font-size', this.textSize + 'px');
         this.input.style('font-family', 'Gochi Hand');
         this.input.elt.addEventListener("keydown", (event) => {
