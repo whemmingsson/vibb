@@ -1,6 +1,7 @@
 class Breadboard {
   constructor() {
     this.inputArea = null;
+    this.outputArea = null;
 
     // Interactive
     this.dragComponent = null;
@@ -49,6 +50,11 @@ class Breadboard {
     state.wires.forEach((w) => w.render());
   }
 
+  _renderAreas() {
+    this.inputArea.render();
+    this.outputArea.render();
+  }
+
   _renderGrid() {
     ColorScheme.GridLine.applyStroke();
     strokeWeight(Globals.GridLineWeight);
@@ -82,6 +88,10 @@ class Breadboard {
 
     this.inputArea = new ClickArea(0, 0, Globals.ButtonDiameter, height);
     state.register(this.inputArea);
+
+    this.outputArea = new ClickArea(width - Globals.ButtonDiameter, 0, Globals.ButtonDiameter, height);
+    state.register(this.outputArea);
+
     this._setupGates();
   }
 
@@ -91,6 +101,7 @@ class Breadboard {
     this.inputArea.render();
 
     this._renderGrid();
+    this._renderAreas();
     this._renderWires();
 
     this._doGateLogic();

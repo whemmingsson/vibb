@@ -9,28 +9,34 @@ class Button extends ComponentBase {
     this.on = false;
     this.outWires = [];
     this.type = "output";
+    this.label = "Lorem"; // Dummy label until we have a UI for this
   }
 
   _applyBorder() {
     strokeWeight(Globals.StrokeWeight);
-    if (this.mouseIsOver()) {
-      ColorScheme.White.applyStroke();
-    } else {
-      ColorScheme.Black.applyStroke();
-    }
+    ColorScheme.White.applyStroke();
   }
 
   _applyFill() {
     if (this.on) {
       ColorScheme.SignalOn.applyFill();
     } else {
-      ColorScheme.SignalOff.applyFill();
+      ColorScheme.ClickArea.applyFill();
     }
   }
 
   _renderWires() {
     this.outWires.forEach((w) => w.render());
   }
+
+  _renderLabel() {
+    ColorScheme.White.applyFill();
+    noStroke();
+    textSize(24);
+    textAlign(CENTER);
+    text(this.label, this.x + this.w, this.y - this.h / 2);
+  }
+
 
   updatePosition(x, y) {
     this.x = x;
@@ -55,6 +61,7 @@ class Button extends ComponentBase {
     this._applyFill();
 
     ellipse(this.x, this.y, this.w, this.h);
+    this._renderLabel();
   }
 
   delete() {

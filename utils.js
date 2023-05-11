@@ -27,11 +27,12 @@ const ColorScheme = {
   SignalOff: new Color(205, 77, 57),
   White: new Color(0, 0, 100),
   Black: new Color(0, 0, 0),
-  ClickArea: new Color(0, 0, 50),
+  ClickArea: new Color(205, 77, 45),
   Debug: new Color(250, 360, 100),
   GridLine: new Color(205, 77, 62),
   Gate: new Color(205, 77, 57, 0.9),
   Background: new Color(205, 77, 57),
+  Transparent: new Color(0, 0, 0, 0),
 };
 
 const Globals = {

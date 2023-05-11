@@ -4,7 +4,7 @@ let saveButton;
 let loadButton;
 
 function setup() {
-  const canvas = createCanvas(1360, 800);
+  const canvas = createCanvas(1380, 800);
   canvas.parent("sketch-holder");
   smooth();
   board.onSetup();

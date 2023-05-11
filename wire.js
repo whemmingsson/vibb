@@ -20,10 +20,13 @@ class Wire extends ComponentBase {
     strokeWeight(Globals.WireWeight);
     if (this.mouseIsOver()) {
       ColorScheme.White.applyStroke();
-      return;
+
+    }
+    else {
+      this._getSignalColor().applyStroke();
     }
 
-    this._getSignalColor().applyStroke();
+
     if (this.on) {
       strokeWeight(Globals.WireWeight + 2);
     }
@@ -117,6 +120,7 @@ class Wire extends ComponentBase {
   render() {
     if (this.anchors.length === 0) {
       this._applyStroke();
+      //this._renderLine(this.from.x, this.from.y, this.to ? this.to.x : mouseX, this.to ? this.to.y : mouseY, this.on ? Globals.WireWeight + 2 : Globals.WireWeight);
       line(this.from.x, this.from.y, this.to ? this.to.x : mouseX, this.to ? this.to.y : mouseY);
     } else {
       this._renderLineSegments();
