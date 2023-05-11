@@ -9,7 +9,7 @@ class Button extends ComponentBase {
     this.on = false;
     this.outWires = [];
     this.type = "output";
-    this.label = "Lorem"; // Dummy label until we have a UI for this
+    this.label = state.register(new Label(this.x + this.w / 2 + 10, this.y - this.h / 2 - 10, "Lorem Ipsum"));
   }
 
   _applyBorder() {
@@ -30,17 +30,16 @@ class Button extends ComponentBase {
   }
 
   _renderLabel() {
-    ColorScheme.White.applyFill();
-    noStroke();
-    textSize(24);
-    textAlign(CENTER);
-    text(this.label, this.x + this.w, this.y - this.h / 2);
+    this.label.render();
   }
 
 
   updatePosition(x, y) {
     this.x = x;
     this.y = y;
+
+    this.label.x = this.x + this.w / 2 + 10;
+    this.label.y = this.y - this.h / 2 - 10;
   }
 
   mouseIsOver() {

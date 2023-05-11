@@ -69,9 +69,8 @@ class Breadboard {
   _positionAndScaleButtons() {
     const h = height / (state.buttons.length + 1);
 
-    state.buttons.forEach((pin, idx) => {
-      pin.x = 0;
-      pin.y = h * (idx + 1);
+    state.buttons.forEach((btn, idx) => {
+      btn.updatePosition(0, h * (idx + 1));
     });
   }
 
@@ -143,6 +142,7 @@ class Breadboard {
       // Default case
       c.onClick(mouseButton);
       this._positionAndScaleButtons();
+      break; // Only handle one object per click
     }
 
     state.wires.forEach((w) => w.onMousePressed());

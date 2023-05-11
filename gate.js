@@ -80,7 +80,7 @@ class Gate extends ComponentBase {
     if (this.gate && this.gate.label) {
       noStroke();
       ColorScheme.White.applyFill();
-      textAlign(CENTER);
+      textAlign(CENTER, BASELINE);
       textSize(this.h * 0.5);
       textFont('Gochi Hand');
       text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.5) / 2.9);

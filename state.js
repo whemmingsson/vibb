@@ -5,6 +5,7 @@ class State {
     this.wires = [];
     this.buttons = [];
     this.areas = [];
+    this.labels = [];
     this.objectCounter = 0;
   }
 
@@ -23,6 +24,10 @@ class State {
     }
     if (object instanceof ClickArea) {
       this.areas.push(object);
+    }
+    if (object instanceof Label) {
+      object.zIndexClick = 100; // Labels should be clicked first
+      this.labels.push(object);
     }
 
     this.objectCounter++;
@@ -60,10 +65,13 @@ class State {
     if (object instanceof ClickArea) {
       this._maybeUnregister(this.areas, object, "area");
     }
+    if (object instanceof Label) {
+      this._maybeUnregister(this.labels, object, "labels");
+    }
   }
 
   all() {
-    return [...this.gates, ...this.pins, ...this.wires, ...this.buttons, ...this.areas];
+    return [...this.gates, ...this.pins, ...this.wires, ...this.buttons, ...this.areas, ...this.labels].sort((a, b) => b.zIndexClick - a.zIndexClick);
   }
 
   toJson() {
