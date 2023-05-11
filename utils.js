@@ -30,7 +30,7 @@ const ColorScheme = {
   ClickArea: new Color(0, 0, 50),
   Debug: new Color(250, 360, 100),
   GridLine: new Color(205, 77, 62),
-  Gate: new Color(0, 0, 0, 0),
+  Gate: new Color(205, 77, 57, 0.9),
   Background: new Color(205, 77, 57),
 };
 

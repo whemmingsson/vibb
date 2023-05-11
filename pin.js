@@ -62,7 +62,8 @@ class Pin extends ComponentBase {
   }
 
   render() {
-    this._renderWires();
+    // NOTE: This has moved to global render function
+    //this._renderWires();
     this._applyFill();
     this._applyBorder();
     if (this.type === "input") arc(this.x, this.y, this.w, this.h, PI / 2, PI / 2 + PI, PIE);

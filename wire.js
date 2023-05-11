@@ -85,8 +85,8 @@ class Wire extends ComponentBase {
     ellipse(x, y, diameter, diameter);
   }
 
-  _renderLine(x1, y1, x2, y2) {
-    strokeWeight(Globals.WireWeight);
+  _renderLine(x1, y1, x2, y2, weight) {
+    strokeWeight(weight);
     line(x1, y1, x2, y2);
   }
 
@@ -102,7 +102,7 @@ class Wire extends ComponentBase {
       } else {
         ColorScheme.White.applyStroke();
       }
-      this._renderLine(s.x1, s.y1, s.x2, s.y2);
+      this._renderLine(s.x1, s.y1, s.x2, s.y2, this.on ? Globals.WireWeight + 2 : Globals.WireWeight);
     });
   }
 

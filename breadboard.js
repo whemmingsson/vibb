@@ -45,6 +45,10 @@ class Breadboard {
     state.buttons.forEach((c) => c.render());
   }
 
+  _renderWires() {
+    state.wires.forEach((w) => w.render());
+  }
+
   _renderGrid() {
     ColorScheme.GridLine.applyStroke();
     strokeWeight(Globals.GridLineWeight);
@@ -87,6 +91,7 @@ class Breadboard {
     this.inputArea.render();
 
     this._renderGrid();
+    this._renderWires();
 
     this._doGateLogic();
     this._renderButtons();
