@@ -9,7 +9,7 @@ class State {
     this.objectCounter = 0;
   }
 
-  register(object) {
+  register(object, loadingFromJson = false) {
     if (object instanceof Gate) {
       this.gates.push(object);
     }
@@ -31,7 +31,9 @@ class State {
     }
 
     this.objectCounter++;
-    object.id = this.objectCounter;
+    if (!loadingFromJson) {
+      object.id = this.objectCounter;
+    }
     return object;
   }
 
@@ -75,7 +77,25 @@ class State {
   }
 
   toJson() {
-    return JSON.stringify({ gates: this.gates.map(g => g.reduce()) });
+    return JSON.stringify({ gates: this.gates.map(g => g.reduce()), wires: this.wires.map(w => w.reduce()) }, null, 2);
+  }
+
+  clear() {
+    this.gates = [];
+    this.pins = [];
+    this.wires = [];
+    this.buttons = [];
+    //this.areas = []; // Don't clear areas, they are used for input and output of the circuit
+    this.labels = [];
+    this.objectCounter = 0;
+  }
+
+  hasState() {
+    return this.gates.length > 0 || this.pins.length > 0 || this.wires.length > 0 || this.buttons.length > 0 || this.labels.length > 0;
+  }
+
+  findByID(id) {
+    return this.all().find((o) => o.id === id);
   }
 
 }

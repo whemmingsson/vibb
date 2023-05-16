@@ -1,18 +1,18 @@
 const Gates = {
   And: {
-    label: "AND",
+    label: "And",
     inputs: 2,
     outputs: 1,
     logic: (signals) => signals.every((s) => s),
   },
   Or: {
-    label: "OR",
+    label: "Or",
     inputs: 2,
     outputs: 1,
     logic: (signals) => signals.some((s) => s),
   },
   Xor: {
-    label: "XOR",
+    label: "Xor",
     inputs: 2,
     outputs: 1,
     logic: (signals) => {
@@ -24,7 +24,7 @@ const Gates = {
     },
   },
   Not: {
-    label: "NOT",
+    label: "Not",
     inputs: 1,
     outputs: 1,
     logic: (signals) => {
@@ -36,19 +36,19 @@ const Gates = {
     },
   },
   Nor: {
-    label: "NOR",
+    label: "Nor",
     inputs: 2,
     outputs: 1,
     logic: (signals) => !signals.some((s) => s),
   },
   Nand: {
-    label: "NAND",
+    label: "Nand",
     inputs: 2,
     outputs: 1,
     logic: (signals) => !signals.every((s) => s),
   },
   Xnor: {
-    label: "XNOR",
+    label: "Xnor",
     inputs: 2,
     outputs: 1,
     logic: (signals) => {
@@ -60,3 +60,7 @@ const Gates = {
     },
   },
 };
+
+const getGateByName = (name) => {
+  return Gates[name];
+}

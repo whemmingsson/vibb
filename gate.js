@@ -1,5 +1,5 @@
 class Gate extends ComponentBase {
-  constructor(x, y, w, h, gate) {
+  constructor(x, y, w, h, gate, loadingFromJson = false) {
     super(true, true, true, true);
     this.x = x;
     this.y = y;
@@ -9,11 +9,15 @@ class Gate extends ComponentBase {
     this.outputs = [];
     this.gate = gate;
 
-    for (let i = 0; i < gate.inputs; i++) {
-      state.register(this.addInput());
-    }
-    for (let i = 0; i < gate.outputs; i++) {
-      state.register(this.addOutput());
+    // Register the pins only if we are not loading from json
+    // TODO: This is a bit hacky, but it works for now
+    if (!loadingFromJson) {
+      for (let i = 0; i < gate.inputs; i++) {
+        state.register(this.addInput());
+      }
+      for (let i = 0; i < gate.outputs; i++) {
+        state.register(this.addOutput());
+      }
     }
   }
 

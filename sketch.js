@@ -1,39 +1,35 @@
 const board = new Breadboard();
+const io = new IO();
 
 let saveButton;
 let loadButton;
+let clearButton;
 
 function setup() {
   const canvas = createCanvas(1380, 800);
   canvas.parent("sketch-holder");
-  smooth();
+
   board.onSetup();
 
-  // DISABLE RIGHT CLICK CONTEXT MENU
+  disableRightClickMenu();
+
+  // TODO: Create a menu class
+  saveButton = createMenuButton("Save", () => io.save());
+  loadButton = createMenuButton("Load", () => io.load());
+  clearButton = createMenuButton("Clear", () => state.clear());
+}
+
+function createMenuButton(text, onClick) {
+  const button = createButton(text);
+  button.parent("menu");
+  button.mousePressed(onClick);
+  return button;
+}
+
+function disableRightClickMenu() {
   for (let element of document.getElementsByClassName("p5Canvas")) {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
-
-  // CREATE BUTTONS
-
-  // TODO: Create a menu class
-  saveButton = createButton("Save");
-  saveButton.parent("menu");
-  saveButton.mousePressed(() => {
-    const stateJson = state.toJson();
-    const stateJson64 = btoa(stateJson);
-    console.log("Saving...", stateJson64);
-    localStorage.setItem('state', stateJson64);
-  });
-
-  loadButton = createButton("Load");
-  loadButton.parent("menu");
-  loadButton.mousePressed(() => {
-    console.log("Loading...");
-    let state64 = localStorage.getItem('state');
-    console.log(atob(state64));
-  });
-
 }
 
 function draw() {

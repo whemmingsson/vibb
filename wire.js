@@ -182,4 +182,13 @@ class Wire extends ComponentBase {
   onMouseReleased() {
     this.draggingAnchor = null;
   }
+
+  reduce() {
+    return {
+      id: this.id,
+      from: this.from.id,
+      to: this.to ? this.to.id : null,
+      anchors: this.anchors
+    };
+  }
 }
