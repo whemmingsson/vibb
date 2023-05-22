@@ -35,19 +35,19 @@ class Breadboard {
   }
 
   _doGateLogic() {
-    state.gates.forEach((c) => c.logic());
+    state.objects.gates.forEach((c) => c.logic());
   }
 
   _renderGates() {
-    state.gates.forEach((c) => c.render());
+    state.objects.gates.forEach((c) => c.render());
   }
 
   _renderButtons() {
-    state.buttons.forEach((c) => c.render());
+    state.objects.buttons.forEach((c) => c.render());
   }
 
   _renderWires() {
-    state.wires.forEach((w) => w.render());
+    state.objects.wires.forEach((w) => w.render());
   }
 
   _renderAreas() {
@@ -67,10 +67,18 @@ class Breadboard {
   }
 
   _positionAndScaleButtons() {
-    const h = height / (state.buttons.length + 1);
+    const h = height / (state.objects.buttons.length + 1);
 
-    state.buttons.forEach((btn, idx) => {
+    state.objects.buttons.forEach((btn, idx) => {
       btn.updatePosition(0, h * (idx + 1));
+    });
+  }
+
+  _positionAndScaleOutputs() {
+    const h = height / (state.outputs.length + 1);
+
+    state.outputs.forEach((output, idx) => {
+      output.updatePosition(0, h * (idx + 1));
     });
   }
 
@@ -85,10 +93,10 @@ class Breadboard {
   onSetup() {
     colorMode(HSB);
 
-    this.inputArea = new ClickArea(0, 0, Globals.ButtonDiameter, height);
+    this.inputArea = new ClickArea(0, 0, Globals.ButtonDiameter, height, "input");
     state.register(this.inputArea);
 
-    this.outputArea = new ClickArea(width - Globals.ButtonDiameter, 0, Globals.ButtonDiameter, height);
+    this.outputArea = new ClickArea(width - Globals.ButtonDiameter, 0, Globals.ButtonDiameter, height, "output");
     state.register(this.outputArea);
 
     this._setupGates();
@@ -133,9 +141,16 @@ class Breadboard {
       }
 
       // Handle clicking on the input area
-      if (c instanceof ClickArea && mouseButton === LEFT) {
+      if (c instanceof ClickArea && mouseButton === LEFT && c.type === "input") {
         state.register(new Button(mouseX, mouseY, Globals.ButtonDiameter, Globals.ButtonDiameter));
         this._positionAndScaleButtons();
+        break;
+      }
+
+      // Handle clicking on the output area
+      if (c instanceof ClickArea && mouseButton === LEFT && c.type === "output") {
+        state.register(new Output(mouseX, mouseY, Globals.ButtonDiameter, Globals.ButtonDiameter));
+        this._positionAndScaleOutputs();
         break;
       }
 
@@ -145,7 +160,7 @@ class Breadboard {
       break; // Only handle one object per click
     }
 
-    state.wires.forEach((w) => w.onMousePressed());
+    state.objects.wires.forEach((w) => w.onMousePressed());
   }
 
   onMouseDragged() {
@@ -153,7 +168,7 @@ class Breadboard {
       this.dragComponent.updatePosition(mouseX - this.dragDeltaX, mouseY - this.dragDeltaY);
     }
 
-    state.wires.forEach((w) => w.onMouseDragged());
+    state.objects.wires.forEach((w) => w.onMouseDragged());
   }
 
   onMouseReleased() {
@@ -197,7 +212,7 @@ class Breadboard {
       this.wire = null;
     }
 
-    state.wires.forEach((w) => w.onMouseReleased());
+    state.objects.wires.forEach((w) => w.onMouseReleased());
   }
 
   onKeyTyped() {
