@@ -8,7 +8,9 @@ class Output extends ComponentBase {
 
         this.on = false;
         this.inWires = [];
-        this.type = "output";
+        this.type = "input"; // TODO: This is a bit hacky, but it works for now
+
+        // TODO: Does an output need a label?
         this.label = state.register(new Label(this.x + this.w / 2 + 10, this.y - this.h / 2 - 10, "Lorem Ipsum"));
     }
 
@@ -23,10 +25,6 @@ class Output extends ComponentBase {
         } else {
             ColorScheme.ClickArea.applyFill();
         }
-    }
-
-    _renderWires() {
-        this.inWires.forEach((w) => w.render());
     }
 
     _renderLabel() {
@@ -48,13 +46,16 @@ class Output extends ComponentBase {
         return isWithinCircle();
     }
 
-    /*toggle() {
-      this.on = !this.on;
-      this.inWires.forEach((wire) => (wire.on = this.on));
-    } */
+    logic() {
+        const newState = this.inWires.some((w) => w.on);
+        if (newState && this.on === false) {
+            this.on = true;
+        } else if (!newState && this.on === true) {
+            this.on = false;
+        }
+    }
 
     render() {
-        //this._renderWires();
         this._applyBorder();
         this._applyFill();
 

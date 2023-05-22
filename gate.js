@@ -118,7 +118,7 @@ class Gate extends ComponentBase {
   }
 
   _outputLogic() {
-    // Logic of the gate it self
+    // Logic of the gate itself
     const outputSignal = this.gate.logic(this.inputs.map((i) => i.on));
     this.outputs.forEach((o) => {
       o.toggle(outputSignal);

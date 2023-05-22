@@ -34,8 +34,8 @@ class Breadboard {
     g2.inputs[0].inWires.push(wire);
   }
 
-  _doGateLogic() {
-    state.objects.gates.forEach((c) => c.logic());
+  _doLogic() {
+    [...state.objects.gates, ...state.objects.outputs].forEach((c) => c.logic());
   }
 
   _renderGates() {
@@ -44,6 +44,10 @@ class Breadboard {
 
   _renderButtons() {
     state.objects.buttons.forEach((c) => c.render());
+  }
+
+  _renderOutputs() {
+    state.objects.outputs.forEach((c) => c.render());
   }
 
   _renderWires() {
@@ -75,10 +79,10 @@ class Breadboard {
   }
 
   _positionAndScaleOutputs() {
-    const h = height / (state.outputs.length + 1);
+    const h = height / (state.objects.outputs.length + 1);
 
-    state.outputs.forEach((output, idx) => {
-      output.updatePosition(0, h * (idx + 1));
+    state.objects.outputs.forEach((output, idx) => {
+      output.updatePosition(width, h * (idx + 1));
     });
   }
 
@@ -105,14 +109,13 @@ class Breadboard {
   onDraw() {
     ColorScheme.Background.applyBackground();
 
-    this.inputArea.render();
-
     this._renderGrid();
     this._renderAreas();
     this._renderWires();
 
-    this._doGateLogic();
+    this._doLogic()
     this._renderButtons();
+    this._renderOutputs();
     this._renderGates();
     this._applyCursor();
 
@@ -189,6 +192,20 @@ class Breadboard {
 
       // Create wire
       if (c instanceof Pin && c.type === "input" && this.wire && mouseButton === LEFT) {
+        const clone = new Wire(this.wire.from, c);
+        state.register(clone);
+
+        // Register the wires on the pins
+        this.wire.from.outWires.push(clone);
+        c.inWires.push(clone);
+
+        this.wire = null;
+        handledReleaseOnObject = true;
+        break;
+      }
+
+      if (c instanceof Output && this.wire && mouseButton === LEFT) {
+        console.log("Dropped on output");
         const clone = new Wire(this.wire.from, c);
         state.register(clone);
 
