@@ -43,7 +43,7 @@ class Wire extends ComponentBase {
   }
 
   _mouseIsOverSegment(segment) {
-    return isPointOnLine({ x: mouseX, y: mouseY }, { x: segment.x1, y: segment.y1 }, { x: segment.x2, y: segment.y2 });
+    return MathUtils.isPointOnLine({ x: mouseX, y: mouseY }, { x: segment.x1, y: segment.y1 }, { x: segment.x2, y: segment.y2 });
   }
 
   _mouseIsOverAnchor(anchor) {
@@ -54,7 +54,7 @@ class Wire extends ComponentBase {
     // Default scenario
     if (this.anchors.length === 0) {
       if (this.from && this.to) {
-        return isPointOnLine({ x: mouseX, y: mouseY }, { x: this.from.x, y: this.from.y }, { x: this.to.x, y: this.to.y });
+        return MathUtils.isPointOnLine({ x: mouseX, y: mouseY }, { x: this.from.x, y: this.from.y }, { x: this.to.x, y: this.to.y });
       }
       return false;
     }

@@ -8,6 +8,16 @@ class Breadboard {
     this.wire = null;
     this.dragDeltaX = 0;
     this.dragDeltaY = 0;
+
+    colorMode(HSB);
+
+    this.inputArea = new ClickArea(0, 0, Globals.ButtonDiameter, height, "input");
+    state.register(this.inputArea);
+
+    this.outputArea = new ClickArea(width - Globals.ButtonDiameter, 0, Globals.ButtonDiameter, height, "output");
+    state.register(this.outputArea);
+
+    this._setupGates();
   }
 
   _createGate(gateDef, x, y) {
@@ -34,38 +44,13 @@ class Breadboard {
     g2.inputs[0].inWires.push(wire);
   }
 
-  _doLogic() {
-    [...state.objects.gates, ...state.objects.outputs].forEach((c) => c.logic());
-  }
-
-  _renderGates() {
-    state.objects.gates.forEach((c) => c.render());
-  }
-
-  _renderButtons() {
-    state.objects.buttons.forEach((c) => c.render());
-  }
-
-  _renderOutputs() {
-    state.objects.outputs.forEach((c) => c.render());
-  }
-
-  _renderWires() {
-    state.objects.wires.forEach((w) => w.render());
-  }
-
-  _renderAreas() {
-    this.inputArea.render();
-    this.outputArea.render();
-  }
-
   _renderGrid() {
     ColorScheme.GridLine.applyStroke();
     strokeWeight(Globals.GridLineWeight);
-    for (let x = 0; x < width; x += Globals.GridCellSize) {
+    for (let x = 0; x < width; x += Settings.GridCellSize) {
       line(x, 0, x, height);
     }
-    for (let y = 0; y < height; y += Globals.GridCellSize) {
+    for (let y = 0; y < height; y += Settings.GridCellSize) {
       line(0, y, width, y);
     }
   }
@@ -94,35 +79,27 @@ class Breadboard {
     }
   }
 
-  onSetup() {
-    colorMode(HSB);
-
-    this.inputArea = new ClickArea(0, 0, Globals.ButtonDiameter, height, "input");
-    state.register(this.inputArea);
-
-    this.outputArea = new ClickArea(width - Globals.ButtonDiameter, 0, Globals.ButtonDiameter, height, "output");
-    state.register(this.outputArea);
-
-    this._setupGates();
-  }
-
   onDraw() {
     ColorScheme.Background.applyBackground();
 
-    this._renderGrid();
-    this._renderAreas();
-    this._renderWires();
+    [...state.objects.gates, ...state.objects.outputs].forEach((c) => c.logic());
 
-    this._doLogic()
-    this._renderButtons();
-    this._renderOutputs();
-    this._renderGates();
+    if (Settings.ShowGrid) this._renderGrid();
+
+    this.inputArea.render();
+    this.outputArea.render();
+    state.objects.wires.forEach((wire) => wire.render());
+    state.objects.buttons.forEach((button) => button.render());
+    state.objects.outputs.forEach((output) => output.render());
+    state.objects.gates.forEach((gate) => gate.render());
+
     this._applyCursor();
 
     if (this.wire) this.wire.render();
   }
 
   onMousePressed() {
+    // TODO: This is a mess. Refactor.
     const pressableObjects = state.all().filter((o) => o.mouseIsOver && o.mouseIsOver());
     for (let i = 0; i < pressableObjects.length; i++) {
       const c = pressableObjects[i];
@@ -175,9 +152,10 @@ class Breadboard {
   }
 
   onMouseReleased() {
+    // TODO: This is a mess. Refactor.
     if (this.dragComponent) {
-      if (Globals.SnapToGrid) {
-        const p = getSnapToGridPoint(this.dragComponent.x, this.dragComponent.y);
+      if (Settings.SnapToGrid) {
+        const p = MathUtils.getSnapToGridPoint(this.dragComponent.x, this.dragComponent.y, Settings.GridCellSize);
         this.dragComponent.updatePosition(p.x, p.y);
       }
       this.dragComponent = null;
@@ -191,21 +169,7 @@ class Breadboard {
       const c = pressableObjects[i];
 
       // Create wire
-      if (c instanceof Pin && c.type === "input" && this.wire && mouseButton === LEFT) {
-        const clone = new Wire(this.wire.from, c);
-        state.register(clone);
-
-        // Register the wires on the pins
-        this.wire.from.outWires.push(clone);
-        c.inWires.push(clone);
-
-        this.wire = null;
-        handledReleaseOnObject = true;
-        break;
-      }
-
-      if (c instanceof Output && this.wire && mouseButton === LEFT) {
-        console.log("Dropped on output");
+      if ((c instanceof Pin && c.type === "input" || c instanceof Output) && this.wire && mouseButton === LEFT) {
         const clone = new Wire(this.wire.from, c);
         state.register(clone);
 
