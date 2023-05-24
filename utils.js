@@ -22,9 +22,9 @@ class Color {
   }
 }
 
-const ColorScheme = {
+const SchemeDefault = {
   SignalOn: new Color(0, 0, 100),
-  SignalOff: new Color(205, 77, 57),
+  SignalOff: new Color(0, 0, 100),
   White: new Color(0, 0, 100),
   Black: new Color(0, 0, 0),
   ClickArea: new Color(205, 77, 45),
@@ -34,6 +34,20 @@ const ColorScheme = {
   Background: new Color(205, 77, 57),
   Transparent: new Color(0, 0, 0, 0),
 };
+
+const SchemeDark = {
+  SignalOn: new Color(0, 90, 100),
+  SignalOff: new Color(0, 0, 85),
+  White: new Color(0, 0, 100),
+  Black: new Color(0, 0, 0),
+  ClickArea: new Color(0, 0, 10),
+  Debug: new Color(250, 360, 100),
+  GridLine: new Color(0, 0, 10),
+  Gate: new Color(0, 0, 5, 0.9),
+  Background: new Color(0, 0, 5),
+  Transparent: new Color(0, 0, 0, 0),
+};
+
 
 // Global constants
 const Globals = {
@@ -50,7 +64,15 @@ const Settings = {
   SnapToGrid: true,
   ShowGrid: true,
   GridCellSize: 20,
+  Theme: 'default',
 }
+
+const SchemeMap = {
+  'default': SchemeDefault,
+  'dark': SchemeDark,
+}
+
+const GetScheme = () => SchemeMap[Settings.Theme];
 
 const MathUtils = {
   isPointOnLine: (p, p1, p2, threshold) => {

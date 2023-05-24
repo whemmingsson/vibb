@@ -24,9 +24,9 @@ class Gate extends ComponentBase {
   _applyBorder() {
     strokeWeight(Globals.StrokeWeight);
     if (this.mouseIsOver()) {
-      ColorScheme.White.applyStroke();
+      GetScheme().White.applyStroke();
     } else {
-      ColorScheme.White.applyStroke();
+      GetScheme().White.applyStroke();
     }
   }
 
@@ -75,7 +75,7 @@ class Gate extends ComponentBase {
   }
 
   _renderRect() {
-    ColorScheme.Gate.applyFill();
+    GetScheme().Gate.applyFill();
     this._applyBorder();
     rect(this.x, this.y, this.w, this.h, this.h * 0.1);
   }
@@ -83,7 +83,7 @@ class Gate extends ComponentBase {
   _renderLabel() {
     if (this.gate && this.gate.label) {
       noStroke();
-      ColorScheme.White.applyFill();
+      GetScheme().White.applyFill();
       textAlign(CENTER, BASELINE);
       textSize(this.h * 0.5);
       textFont('Gochi Hand');

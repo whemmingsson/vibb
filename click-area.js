@@ -10,7 +10,7 @@ class ClickArea extends ComponentBase {
 
   render() {
     noStroke();
-    ColorScheme.ClickArea.applyFill();
+    GetScheme().ClickArea.applyFill();
     rect(this.x, this.y, this.w, this.h);
   }
 

@@ -19,7 +19,7 @@ class Wire extends ComponentBase {
   _applyStroke() {
     strokeWeight(Globals.WireWeight);
     if (this.mouseIsOver()) {
-      ColorScheme.White.applyStroke();
+      GetScheme().White.applyStroke();
 
     }
     else {
@@ -70,8 +70,8 @@ class Wire extends ComponentBase {
   }
 
   _applyOnOffStrokeColor() {
-    if (this.on) ColorScheme.SignalOn.applyStroke();
-    else ColorScheme.SignalOff.applyStroke();
+    if (this.on) GetScheme().SignalOn.applyStroke();
+    else GetScheme().SignalOff.applyStroke();
   }
 
   _renderAnchorPoint(x, y, color) {
@@ -82,7 +82,7 @@ class Wire extends ComponentBase {
     let diameter = Globals.AnchorDiameter;
     if (this._mouseIsOverAnchor({ x: x, y: y })) {
       diameter = 20;
-      ColorScheme.White.applyFill().applyStroke();
+      GetScheme().White.applyFill().applyStroke();
     }
     strokeWeight(Globals.StrokeWeight);
     ellipse(x, y, diameter, diameter);
@@ -94,16 +94,16 @@ class Wire extends ComponentBase {
   }
 
   _getSignalColor() {
-    return this.on ? ColorScheme.SignalOn : ColorScheme.SignalOn;
+    return this.on ? GetScheme().SignalOn : GetScheme().SignalOff;
   }
 
   _renderLineSegments() {
     let segments = this._createTemporarySegments();
     segments.forEach((s) => {
       if (this._mouseIsOverSegment(s)) {
-        ColorScheme.White.applyStroke();
+        GetScheme().White.applyStroke();
       } else {
-        ColorScheme.White.applyStroke();
+        GetScheme().White.applyStroke();
       }
       this._renderLine(s.x1, s.y1, s.x2, s.y2, this.on ? Globals.WireWeight + 2 : Globals.WireWeight);
     });
@@ -129,7 +129,7 @@ class Wire extends ComponentBase {
 
     if (this.mouseIsOver()) {
       noFill();
-      ColorScheme.White.applyStroke();
+      GetScheme().White.applyStroke();
       strokeWeight(Globals.StrokeWeight);
       ellipse(mouseX, mouseY, Globals.AnchorDiameter, Globals.AnchorDiameter);
     }

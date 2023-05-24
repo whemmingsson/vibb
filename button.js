@@ -14,14 +14,14 @@ class Button extends ComponentBase {
 
   _applyBorder() {
     strokeWeight(Globals.StrokeWeight);
-    ColorScheme.White.applyStroke();
+    GetScheme().White.applyStroke();
   }
 
   _applyFill() {
     if (this.on) {
-      ColorScheme.SignalOn.applyFill();
+      GetScheme().SignalOn.applyFill();
     } else {
-      ColorScheme.ClickArea.applyFill();
+      GetScheme().ClickArea.applyFill();
     }
   }
 

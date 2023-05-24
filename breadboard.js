@@ -36,16 +36,16 @@ class Breadboard {
     create(Gates.Xnor, 1160, 10);
 
     // Lab and dev gates
-    const g1 = create(Gates.Not, 300, 200);
+    /*const g1 = create(Gates.Not, 300, 200);
     const g2 = create(Gates.Not, 600, 200);
     const wire = new Wire(g1.outputs[0], g2.inputs[0]);
     state.register(wire);
     g1.outputs[0].outWires.push(wire);
-    g2.inputs[0].inWires.push(wire);
+    g2.inputs[0].inWires.push(wire); */
   }
 
   _renderGrid() {
-    ColorScheme.GridLine.applyStroke();
+    GetScheme().GridLine.applyStroke();
     strokeWeight(Globals.GridLineWeight);
     for (let x = 0; x < width; x += Settings.GridCellSize) {
       line(x, 0, x, height);
@@ -80,7 +80,7 @@ class Breadboard {
   }
 
   onDraw() {
-    ColorScheme.Background.applyBackground();
+    GetScheme().Background.applyBackground();
 
     [...state.objects.gates, ...state.objects.outputs].forEach((c) => c.logic());
 

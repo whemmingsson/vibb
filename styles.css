@@ -3,12 +3,13 @@
 }
 
 body {
-    font-family: 'Gochi Hand', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #111;
     color: #fff;
 }
 
 header h1 {
+    font-family: 'Gochi Hand', 'Arial Narrow', Arial, sans-serif;
     font-size: 2.5em;
     text-align: center;
     margin: 0.67em 0;
@@ -24,10 +25,10 @@ header h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100vh;
 }
 
 #menu {
-    font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -45,10 +46,10 @@ header h1 {
     border: 1px solid #555;
     height: 1.8em;
     padding: 0 0.5em;
+    margin-right: 0.5em;
 }
 
 #menu button {
-    font-family: 'Arial', sans-serif;
     margin-right: 1em;
     padding: 0.2em 0.7em;
     font-size: 1em;
@@ -69,4 +70,92 @@ header h1 {
 
 #menu .slider span {
     margin-right: 0.5em;
+}
+
+#menu select {
+    margin-right: 0.5em;
+    height: 1.8em;
+    font-size: 1em;
+}
+
+footer {
+    position: fixed;
+    bottom: 10px;
+}
+
+#help-icon {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0.5em;
+    left: 0.5em;
+    width: 30px;
+    height: 30px;
+    font-size: 1.5em;
+    cursor: pointer;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+#help-icon:hover {
+    background-color: #fff;
+    color: #111;
+}
+
+#help-section {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 3.5em;
+    left: 0.7em;
+    background-color: #111;
+    border: 2px solid #fff;
+    padding: 1em;
+    color: #fff;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    font-size: 1em;
+    width: 500px;
+}
+
+#help-section ul li:not(:last-child) {
+    padding-bottom: 1em;
+}
+
+#help-section.visible {
+    opacity: 1;
+}
+
+#help-section .close {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0.5em;
+    right: 0.5em;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+#help-section .close:hover {
+    background-color: #fff;
+    color: #111;
+}
+
+.keyword {
+    font-weight: bold;
+    font-family: 'Inconsolata', Courier, monospace;
+}
+
+.divider {
+    border-bottom: 1px solid #fff;
+    margin-bottom: 1em;
+    width: 100%;
 }

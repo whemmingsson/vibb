@@ -14,15 +14,15 @@ class Pin extends ComponentBase {
   _applyBorder() {
     strokeWeight(Globals.StrokeWeight);
     if (this.mouseIsOver()) {
-      ColorScheme.White.applyStroke();
+      GetScheme().White.applyStroke();
     } else {
-      ColorScheme.White.applyStroke();
+      GetScheme().White.applyStroke();
     }
   }
 
   _applyFill() {
-    if (this.on) ColorScheme.SignalOn.applyFill();
-    else ColorScheme.SignalOff.applyFill();
+    if (this.on) GetScheme().SignalOn.applyFill();
+    else GetScheme().Gate.applyFill();
   }
 
   removeWire(wire) {

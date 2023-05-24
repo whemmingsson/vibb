@@ -20,7 +20,7 @@ class Label extends ComponentBase {
 
 
     _renderLabel() {
-        ColorScheme.White.applyFill();
+        GetScheme().White.applyFill();
         noStroke();
         textAlign(LEFT, TOP);
         textSize(this.textSize);
@@ -47,7 +47,7 @@ class Label extends ComponentBase {
 
     render() {
         if (this.mouseIsOver()) {
-            ColorScheme.White.applyStroke();
+            GetScheme().White.applyStroke();
             noFill();
             rect(this.x, this.y, this.w, this.h);
         }

@@ -7,6 +7,7 @@ class Menu {
         this.toggleGridCheckbox = this._createToggle("Show grid", () => Settings.ShowGrid = !Settings.ShowGrid, true);
         this.toggleGridCheckbox = this._createToggle("Snap to grid", () => Settings.SnapToGrid = !Settings.SnapToGrid, true);
         this.gridSizeSlider = this._createSlider("Grid size", 10, 50, Settings.GridCellSize, 10, (e) => { Settings.GridCellSize = parseInt(e.target.value); });
+        this.themeDropdown = this._createDropdown("Theme", [{ label: "Blueprint (default)", value: 'default' }, { label: "Dunkelheit", value: 'dark' }], (e) => { Settings.Theme = e.target.value; });
     }
 
     _createMenuButton(text, onClick) {
@@ -35,5 +36,13 @@ class Menu {
         wrapper.parent("menu");
         slider.changed(onChange);
         return slider;
+    }
+
+    _createDropdown(text, options, onChange) {
+        const dropdown = createSelect();
+        dropdown.parent("menu");
+        dropdown.changed(onChange);
+        options.forEach((option) => dropdown.option(option.label, option.value));
+        return dropdown;
     }
 }
