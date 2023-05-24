@@ -6,7 +6,7 @@ let loadButton;
 let clearButton;
 
 function setup() {
-  const canvas = createCanvas(1380, 800);
+  const canvas = createCanvas(1380, 700);
   canvas.parent("sketch-holder");
 
   board.onSetup();
