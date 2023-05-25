@@ -10,6 +10,7 @@ class State {
 
   _setupState() {
     this._setStateDefinition("Gate", "gates");
+    this._setStateDefinition("GateTemplate", "templates");
     this._setStateDefinition("Pin", "pins");
     this._setStateDefinition("Wire", "wires");
     this._setStateDefinition("Button", "buttons");
@@ -54,6 +55,14 @@ class State {
     console.log("Updated 'all' cache");
   }
 
+  _belongsToGateTemplate(object) {
+    return object.parentComponent && object.parentComponent instanceof GateTemplate;
+  }
+
+  _belongsToGateTemplateArr(array) {
+    return array.some((o) => this._belongsToGateTemplate(o));
+  }
+
   register(object, loadingFromJson = false) {
     const type = this._getType(object);
     if (!this.state[type]) { return; }
@@ -75,7 +84,6 @@ class State {
     return object;
   }
 
-
   unregister(object) {
     if (!object.id) return;
 
@@ -89,11 +97,10 @@ class State {
   }
 
   all() {
-    if (this.allCache) {
-      return this.allCache;
+    if (!this.allCache) {
+      this._updateAllCache();
     }
 
-    this._updateAllCache();
     return this.allCache;
   }
 
@@ -103,7 +110,7 @@ class State {
 
   clear() {
     Object.keys(this.state).forEach((key) => {
-      if (key !== "ClickArea") {
+      if (key !== "ClickArea" && key !== "GateTemplate") {
         this.state[key].objects = [];
         this.objects[this.state[key].arrayShorthand] = [];
       }
@@ -115,7 +122,7 @@ class State {
     let result = false;
     Object.keys(this.state).forEach((key) => {
       console.log("Checking hasState for key", key, this.state[key].objects.length);
-      if (this.state[key].objects.length > 0 && key !== "ClickArea") {
+      if (this.state[key].objects.length > 0 && !this._belongsToGateTemplateArr(this.state[key].objects) && key !== "ClickArea" && key !== "GateTemplate") {
         result = true;
       }
     });

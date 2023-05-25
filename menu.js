@@ -3,7 +3,7 @@ class Menu {
         this.io = new IO();
         this.saveButton = this._createMenuButton("Save", () => this.io.save());
         this.loadButton = this._createMenuButton("Load", () => this.io.load());
-        this.clearButton = this._createMenuButton("Clear", () => confirm("Are you sure you want to clear? This will delete the current state.") && state.clear());
+        this.clearButton = this._createMenuButton("Clear", () => state.hasState() && confirm("Are you sure you want to clear? This will delete the current state.") && state.clear());
         this.toggleGridCheckbox = this._createToggle("Show grid", () => Settings.ShowGrid = !Settings.ShowGrid, true);
         this.toggleGridCheckbox = this._createToggle("Snap to grid", () => Settings.SnapToGrid = !Settings.SnapToGrid, true);
         this.gridSizeSlider = this._createSlider("Grid size", 10, 50, Settings.GridCellSize, 10, (e) => { Settings.GridCellSize = parseInt(e.target.value); });

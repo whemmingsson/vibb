@@ -18,7 +18,6 @@ class Label extends ComponentBase {
         this.h = this.textSize;
     }
 
-
     _renderLabel() {
         GetScheme().White.applyFill();
         noStroke();
@@ -27,12 +26,16 @@ class Label extends ComponentBase {
         text(this.text, this.x, this.y);
     }
 
+    _updatePosition() {
+        const position = BrowserUtils.getDistanceFromScreenEdges(this.x, this.y);
+        this.input.position(position.x - 1, position.y - 1);
+    }
+
     _createInput() {
         this.input = createInput(this.text);
-        this.input.position(this.x + 2, this.y + 2);
-        this.input.size(Math.max(this.w + 5, 100), this.h * 1.1);
+        this._updatePosition();
+        this.input.size(this.w + 5, this.h * 1.11);
         this.input.style('font-size', this.textSize + 'px');
-        this.input.style('font-family', 'Gochi Hand');
         this.input.elt.addEventListener("keydown", (event) => {
             if (event.code === "Enter") {
                 this.text = this.input.value();
@@ -46,6 +49,10 @@ class Label extends ComponentBase {
     }
 
     render() {
+        if (this.input) {
+            this._updatePosition();
+        }
+
         if (this.mouseIsOver()) {
             GetScheme().White.applyStroke();
             noFill();

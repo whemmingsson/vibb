@@ -120,7 +120,6 @@ class Wire extends ComponentBase {
   render() {
     if (this.anchors.length === 0) {
       this._applyStroke();
-      //this._renderLine(this.from.x, this.from.y, this.to ? this.to.x : mouseX, this.to ? this.to.y : mouseY, this.on ? Globals.WireWeight + 2 : Globals.WireWeight);
       line(this.from.x, this.from.y, this.to ? this.to.x : mouseX, this.to ? this.to.y : mouseY);
     } else {
       this._renderLineSegments();

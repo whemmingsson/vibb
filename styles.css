@@ -1,5 +1,7 @@
 * {
     box-sizing: border-box;
+    user-select: none;
+    /* Standard syntax */
 }
 
 body {
@@ -9,7 +11,7 @@ body {
 }
 
 header h1 {
-    font-family: 'Gochi Hand', 'Arial Narrow', Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 2.5em;
     text-align: center;
     margin: 0.67em 0;
@@ -117,9 +119,10 @@ footer {
     color: #fff;
     z-index: 1;
     opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+    transition: visibility 0.3s ease-in-out, opacity 0.3s ease-in-out;
     font-size: 1em;
     width: 500px;
+    visibility: hidden;
 }
 
 #help-section ul li:not(:last-child) {
@@ -128,6 +131,7 @@ footer {
 
 #help-section.visible {
     opacity: 1;
+    visibility: visible;
 }
 
 #help-section .close {

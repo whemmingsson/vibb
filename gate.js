@@ -8,6 +8,7 @@ class Gate extends ComponentBase {
     this.inputs = [];
     this.outputs = [];
     this.gate = gate;
+    this.type = "template";
 
     // Register the pins only if we are not loading from json
     // TODO: This is a bit hacky, but it works for now
@@ -18,6 +19,10 @@ class Gate extends ComponentBase {
       for (let i = 0; i < gate.outputs; i++) {
         state.register(this.addOutput());
       }
+    }
+
+    if (loadingFromJson) {
+      this.type = "gate";
     }
   }
 
@@ -84,10 +89,9 @@ class Gate extends ComponentBase {
     if (this.gate && this.gate.label) {
       noStroke();
       GetScheme().White.applyFill();
-      textAlign(CENTER, BASELINE);
+      textAlign(CENTER, CENTER);
       textSize(this.h * 0.5);
-      textFont('Gochi Hand');
-      text(this.gate.label, this.x + this.w / 2, this.y + this.h / 2 + (this.h * 0.5) / 2.9);
+      text(this.gate.label.toUpperCase(), this.x + this.w / 2, this.y + this.h / 2 + this.h * 0.05);
 
       // Render ID for debugging
       //textSize(this.h * 0.2);
@@ -148,6 +152,10 @@ class Gate extends ComponentBase {
   }
 
   delete() {
+    if (this instanceof GateTemplate) {
+      return; // Don't delete templates
+    }
+
     [...this.inputs, ...this.outputs].forEach((c) => {
       c.delete();
       state.unregister(c);
@@ -159,6 +167,7 @@ class Gate extends ComponentBase {
 
   clone() {
     const clone = new Gate(this.x, this.y + this.h + 20, this.w, this.h, this.gate);
+    clone.type = "gate";
     state.register(clone);
   }
 
@@ -173,5 +182,16 @@ class Gate extends ComponentBase {
       inputs: this.inputs.map((i) => i.reduce()),
       outputs: this.outputs.map((o) => o.reduce())
     };
+  }
+}
+
+class GateTemplate extends Gate {
+  constructor(x, y, w, h, gate, loadingFromJson = false) {
+    super(x, y, w, h, gate, loadingFromJson);
+    this.type = "template";
+  }
+
+  delete() {
+    return; // Don't delete templates
   }
 }

@@ -93,3 +93,20 @@ const MathUtils = {
   getSnapToGridPoint: (x, y, gcs) => { return { x: Math.round(x / gcs) * gcs, y: Math.round(y / gcs) * gcs } },
 }
 
+const BrowserUtils = {
+  getDistanceFromScreenEdges: (canvasX, canvasY) => {
+    // Get the bounding rectangle of the canvas
+    const canvasRect = document.getElementById("sketch-holder").getBoundingClientRect();
+
+    // Calculate the distance to the left edge of the screen
+    const distanceToLeftEdge = canvasRect.left + canvasX;
+
+    // Calculate the distance to the top edge of the screen
+    const distanceToTopEdge = canvasRect.top + canvasY;
+
+    return {
+      x: distanceToLeftEdge,
+      y: distanceToTopEdge
+    };
+  }
+}

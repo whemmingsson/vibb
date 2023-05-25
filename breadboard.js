@@ -20,20 +20,20 @@ class Breadboard {
     this._setupGates();
   }
 
-  _createGate(gateDef, x, y) {
-    return state.register(new Gate(x, y, 140, 60, gateDef));
+  _createGateTemplate(gateDef, x, y) {
+    return state.register(new GateTemplate(x, y, 120, 50, gateDef));
   }
 
   _setupGates() {
-    const create = this._createGate;
-    create(Gates.Not, 80, 10);
-    create(Gates.And, 260, 10);
-    create(Gates.Or, 440, 10);
-    create(Gates.Xor, 620, 10);
+    const create = this._createGateTemplate;
+    create(Gates.Not, 80, 45);
+    create(Gates.And, 260, 45);
+    create(Gates.Or, 440, 45);
+    create(Gates.Xor, 620, 45);
 
-    create(Gates.Nand, 800, 10);
-    create(Gates.Nor, 980, 10);
-    create(Gates.Xnor, 1160, 10);
+    create(Gates.Nand, 800, 45);
+    create(Gates.Nor, 980, 45);
+    create(Gates.Xnor, 1160, 45);
 
     // Lab and dev gates
     /*const g1 = create(Gates.Not, 300, 200);
@@ -53,6 +53,14 @@ class Breadboard {
     for (let y = 0; y < height; y += Settings.GridCellSize) {
       line(0, y, width, y);
     }
+  }
+
+  _renderGateMenuHeader() {
+    GetScheme().White.applyFill();
+    noStroke();
+    textSize(20);
+    textAlign(LEFT, CENTER);
+    text("Gates (right-click to clone)", 80, 20);
   }
 
   _positionAndScaleButtons() {
@@ -86,11 +94,14 @@ class Breadboard {
 
     if (Settings.ShowGrid) this._renderGrid();
 
+    this._renderGateMenuHeader();
+
     this.inputArea.render();
     this.outputArea.render();
     state.objects.wires.forEach((wire) => wire.render());
     state.objects.buttons.forEach((button) => button.render());
     state.objects.outputs.forEach((output) => output.render());
+    state.objects.templates.forEach((template) => template.render());
     state.objects.gates.forEach((gate) => gate.render());
 
     this._applyCursor();
@@ -106,7 +117,7 @@ class Breadboard {
 
       // Begin-dragging
       // To include dragability for buttons: || c instanceof Button
-      if (c instanceof Gate && mouseButton === LEFT) {
+      if (c instanceof Gate && mouseButton === LEFT && !(c instanceof GateTemplate)) {
         this.dragComponent = c;
         this.dragDeltaX = Math.abs(mouseX - this.dragComponent.x);
         this.dragDeltaY = Math.abs(mouseY - this.dragComponent.y);
@@ -114,7 +125,7 @@ class Breadboard {
       }
 
       // Handle wire creation
-      if (((c instanceof Pin && c.type === "output") || c instanceof Button) && mouseButton === LEFT) {
+      if (((c instanceof Pin && c.type === "output" && !(c.parentComponent instanceof GateTemplate)) || c instanceof Button) && mouseButton === LEFT) {
         this.wire = new Wire(c, null);
         this.wire.on = c.on;
         break;
@@ -169,7 +180,7 @@ class Breadboard {
       const c = pressableObjects[i];
 
       // Create wire
-      if ((c instanceof Pin && c.type === "input" || c instanceof Output) && this.wire && mouseButton === LEFT) {
+      if ((c instanceof Pin && c.type === "input" && !(c.parentComponent instanceof GateTemplate) || c instanceof Output) && this.wire && mouseButton === LEFT) {
         const clone = new Wire(this.wire.from, c);
         state.register(clone);
 
@@ -202,7 +213,7 @@ class Breadboard {
       const c = interactiveObjects[i];
       if (key != "d") {
         c.onKeyTyped(key);
-      } else if (confirm("Do you wanna delete this gate?")) {
+      } else if (!(c instanceof GateTemplate) && confirm("Do you wanna delete this gate?")) {
         c.delete();
         state.unregister(c);
       }

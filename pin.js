@@ -79,6 +79,8 @@ class Pin extends ComponentBase {
   }
 
   onClick(mouseButton) {
+    if (this.parentComponent instanceof GateTemplate) return;
+
     if (mouseButton === RIGHT) {
       if (this.type === "input") this.parentComponent.removeInput(this);
       else if (this.type === "output") this.parentComponent.removeOutput(this);
