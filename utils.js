@@ -91,6 +91,27 @@ const MathUtils = {
   },
 
   getSnapToGridPoint: (x, y, gcs) => { return { x: Math.round(x / gcs) * gcs, y: Math.round(y / gcs) * gcs } },
+
+  generatePermutations: (X) => {
+    const values = [true, false];
+    const permutations = [];
+
+    function backtrack(currentPermutation) {
+      if (currentPermutation.length === X) {
+        permutations.push(currentPermutation.slice()); // Make a copy of the permutation
+        return;
+      }
+
+      for (const value of values) {
+        currentPermutation.push(value);
+        backtrack(currentPermutation);
+        currentPermutation.pop();
+      }
+    }
+
+    backtrack([]);
+    return permutations;
+  }
 }
 
 const BrowserUtils = {

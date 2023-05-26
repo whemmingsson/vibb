@@ -8,6 +8,7 @@ class Menu {
         this.toggleGridCheckbox = this._createToggle("Snap to grid", () => Settings.SnapToGrid = !Settings.SnapToGrid, true);
         this.gridSizeSlider = this._createSlider("Grid size", 10, 50, Settings.GridCellSize, 10, (e) => { Settings.GridCellSize = parseInt(e.target.value); });
         this.themeDropdown = this._createDropdown("Theme", [{ label: "Blueprint (default)", value: 'default' }, { label: "Dunkelheit", value: 'dark' }], (e) => { Settings.Theme = e.target.value; });
+        this.createTruthTable = this._createMenuButton("Create truth table", () => TruthTableUtils.generate());
     }
 
     _createMenuButton(text, onClick) {

@@ -80,4 +80,15 @@ class Output extends ComponentBase {
         }
     }
 
+    reduce() {
+        return {
+            id: this.id,
+            x: this.x,
+            y: this.y,
+            w: this.w,
+            h: this.h,
+            inWires: this.inWires.map((w) => w.id),
+            type: this.type
+        };
+    }
 }

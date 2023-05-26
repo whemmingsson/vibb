@@ -1,11 +1,9 @@
 class State {
   constructor() {
-    this.objectCounter = 0;
     this.state = {};
     this.objects = {};
-    this._setupState();
-
     this.allCache = null;
+    this._setupState();
   }
 
   _setupState() {
@@ -52,7 +50,6 @@ class State {
     });
 
     this.allCache = result.sort((a, b) => b.zIndexClick - a.zIndexClick);
-    console.log("Updated 'all' cache");
   }
 
   _belongsToGateTemplate(object) {
@@ -63,13 +60,11 @@ class State {
     return array.some((o) => this._belongsToGateTemplate(o));
   }
 
-  register(object, loadingFromJson = false) {
+  register(object) {
     const type = this._getType(object);
     if (!this.state[type]) {
       return;
     }
-
-    console.log("In register, ", object);
 
     this.state[type].objects.push(object);
 
@@ -77,12 +72,6 @@ class State {
       object.zIndexClick = 100; // Labels should be clicked first
     }
 
-    this.objectCounter++;
-    if (!loadingFromJson) {
-      object.id = this.objectCounter;
-    }
-
-    console.log("Registering", object.constructor.name, "with id", object.id, "to list", type);
     this._updateShorthands();
     this._updateAllCache();
     return object;
@@ -95,10 +84,10 @@ class State {
     if (!this.state[type]) {
       return;
     }
+
     const idx = this._idx(this.state[type].objects, object);
     if (idx >= 0) {
       this.state[type].objects.splice(idx, 1);
-      console.log("Unregistering", object.constructor.name, "with id", object.id, "from list", type);
     }
 
     this._updateShorthands();
@@ -114,7 +103,13 @@ class State {
   }
 
   toJson() {
-    return JSON.stringify({ gates: this.state["Gate"].objects.map((g) => g.reduce()), wires: this.state["Wire"].objects.map((w) => w.reduce()), buttons: this.state["Button"].objects.map((b) => b.reduce()) }, null, 2);
+    return JSON.stringify(
+      {
+        gates: this.state["Gate"].objects.map((g) => g.reduce()),
+        wires: this.state["Wire"].objects.map((w) => w.reduce()),
+        buttons: this.state["Button"].objects.map((b) => b.reduce()),
+        outputs: this.state["Output"].objects.map((o) => o.reduce())
+      }, null, 2);
   }
 
   clear() {
@@ -124,7 +119,6 @@ class State {
         this.objects[this.state[key].arrayShorthand] = [];
       }
     });
-    this.objectCounter = 0;
   }
 
   hasState() {

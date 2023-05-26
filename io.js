@@ -1,5 +1,5 @@
 class IO {
-  constructor() {}
+  constructor() { }
 
   _loadRaw() {
     return localStorage.getItem("state");
@@ -9,7 +9,7 @@ class IO {
     stateObj.gates.forEach((g) => {
       const gate = new Gate(g.x, g.y, g.w, g.h, getGateByName(g.gate.label), true);
       gate.id = g.id;
-      state.register(gate, true);
+      state.register(gate);
     });
   }
 
@@ -19,13 +19,13 @@ class IO {
       g.inputs.forEach((p) => {
         const pin = gate.addInput();
         pin.id = p.id;
-        state.register(pin, true);
+        state.register(pin);
       });
 
       g.outputs.forEach((p) => {
         const pin = gate.addOutput();
         pin.id = p.id;
-        state.register(pin, true);
+        state.register(pin);
       });
     });
   }
@@ -34,13 +34,20 @@ class IO {
     stateObj.buttons.forEach((b) => {
       const button = new Button(b.x, b.y, b.w, b.h);
       button.id = b.id;
-      state.register(button, true);
+      state.register(button);
+    });
+  }
+
+  _loadOutputs(stateObj) {
+    stateObj.outputs.forEach((o) => {
+      const output = new Output(o.x, o.y, o.w, o.h);
+      output.id = o.id;
+      state.register(output);
     });
   }
 
   _loadWires(stateObj) {
     stateObj.wires.forEach((w) => {
-      console.log(w.from, w.to);
       const from = state.findByID(w.from);
       const to = state.findByID(w.to);
       const wire = new Wire(from, to);
@@ -48,7 +55,7 @@ class IO {
       wire.anchors = w.anchors;
       from.outWires.push(wire);
       to.inWires.push(wire);
-      state.register(wire, true);
+      state.register(wire);
     });
   }
 
@@ -82,6 +89,7 @@ class IO {
     this._loadGates(stateObj);
     this._loadPins(stateObj);
     this._loadButtons(stateObj);
+    this._loadOutputs(stateObj);
     this._loadWires(stateObj);
   }
 }
