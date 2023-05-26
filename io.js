@@ -31,7 +31,12 @@ class IO {
   }
 
   _loadButtons(stateObj) {
-    stateObj.buttons.forEach((b) => {});
+    console.log("Loading buttons");
+    stateObj.buttons.forEach((b) => {
+      console.log(b);
+      const button = new Button(b.x, b.y, b.w, b.h);
+      state.register(button, true);
+    });
   }
 
   _loadWires(stateObj) {
@@ -76,6 +81,7 @@ class IO {
 
     this._loadGates(stateObj);
     this._loadPins(stateObj);
+    this._loadButtons(stateObj);
     this._loadWires(stateObj);
   }
 }

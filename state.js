@@ -98,6 +98,9 @@ class State {
       this.state[type].objects.splice(idx, 1);
       console.log("Unregistering", object.constructor.name, "with id", object.id, "from list", type);
     }
+
+    this._updateShorthands();
+    this._updateAllCache();
   }
 
   all() {
@@ -109,7 +112,7 @@ class State {
   }
 
   toJson() {
-    return JSON.stringify({ gates: this.state["Gate"].objects.map((g) => g.reduce()), wires: this.state["Wire"].objects.map((w) => w.reduce()) }, null, 2);
+    return JSON.stringify({ gates: this.state["Gate"].objects.map((g) => g.reduce()), wires: this.state["Wire"].objects.map((w) => w.reduce()), buttons: this.state["Button"].objects.map((b) => b.reduce()) }, null, 2);
   }
 
   clear() {
