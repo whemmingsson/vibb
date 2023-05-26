@@ -1,105 +1,136 @@
 class State {
   constructor() {
-    this.gates = [];
-    this.pins = [];
-    this.wires = [];
-    this.buttons = [];
-    this.areas = [];
-    this.labels = [];
     this.objectCounter = 0;
+    this.state = {};
+    this.objects = {};
+    this._setupState();
+
+    this.allCache = null;
   }
 
-  register(object, loadingFromJson = false) {
-    if (object instanceof Gate) {
-      this.gates.push(object);
-    }
-    if (object instanceof Pin) {
-      this.pins.push(object);
-    }
-    if (object instanceof Wire) {
-      this.wires.push(object);
-    }
-    if (object instanceof Button) {
-      this.buttons.push(object);
-    }
-    if (object instanceof ClickArea) {
-      this.areas.push(object);
-    }
-    if (object instanceof Label) {
-      object.zIndexClick = 100; // Labels should be clicked first
-      this.labels.push(object);
-    }
-
-    this.objectCounter++;
-    if (!loadingFromJson) {
-      object.id = this.objectCounter;
-    }
-    return object;
+  _setupState() {
+    this._setStateDefinition("Gate", "gates");
+    this._setStateDefinition("GateTemplate", "templates");
+    this._setStateDefinition("Pin", "pins");
+    this._setStateDefinition("Wire", "wires");
+    this._setStateDefinition("Button", "buttons");
+    this._setStateDefinition("Output", "outputs");
+    this._setStateDefinition("ClickArea", "clickAreas");
+    this._setStateDefinition("Label", "labels");
   }
 
-  _maybeUnregister(list, object, listName) {
-    const idx = this._idx(list, object);
-    if (idx >= 0) {
-      list.splice(idx, 1);
-      console.log("Unregistering", object.constructor.name, "with id", object.id, "from list", listName);
-    }
+  _setStateDefinition(type, arrayShorthand) {
+    this.state[type] = this._createStateDefinition(type, arrayShorthand);
+  }
+
+  _createStateDefinition(type, arrayShorthand) {
+    return {
+      type: type,
+      arrayShorthand: arrayShorthand,
+      objects: [],
+    };
+  }
+
+  _getType(object) {
+    return object.constructor.name;
+  }
+
+  _updateShorthands() {
+    Object.keys(this.state).forEach((key) => {
+      this.objects[this.state[key].arrayShorthand] = this.state[key].objects;
+    });
   }
 
   _idx(list, object) {
     return list.indexOf(list.find((o) => o.id === object.id));
   }
 
+  _updateAllCache() {
+    const result = [];
+    Object.keys(this.state).forEach((key) => {
+      result.push(...this.state[key].objects);
+    });
+
+    this.allCache = result.sort((a, b) => b.zIndexClick - a.zIndexClick);
+    console.log("Updated 'all' cache");
+  }
+
+  _belongsToGateTemplate(object) {
+    return object.parentComponent && object.parentComponent instanceof GateTemplate;
+  }
+
+  _belongsToGateTemplateArr(array) {
+    return array.some((o) => this._belongsToGateTemplate(o));
+  }
+
+  register(object, loadingFromJson = false) {
+    const type = this._getType(object);
+    if (!this.state[type]) {
+      return;
+    }
+
+    this.state[type].objects.push(object);
+
+    if (object instanceof Label) {
+      object.zIndexClick = 100; // Labels should be clicked first
+    }
+
+    this.objectCounter++;
+    if (!loadingFromJson) {
+      object.id = this.objectCounter;
+    }
+
+    console.log("Registering", object.constructor.name, "with id", object.id, "to list", type);
+    this._updateShorthands();
+    this._updateAllCache();
+    return object;
+  }
+
   unregister(object) {
     if (!object.id) return;
 
-    if (object instanceof Gate) {
-      this._maybeUnregister(this.gates, object, "gates");
+    const type = this._getType(object);
+    if (!this.state[type]) {
+      return;
     }
-    if (object instanceof Pin) {
-      this._maybeUnregister(this.pins, object, "pins");
-    }
-    if (object instanceof Wire) {
-      this._maybeUnregister(this.wires, object, "wires");
-    }
-    if (object instanceof Button) {
-      this._maybeUnregister(this.buttons, object, "buttons");
-    }
-    if (object instanceof ClickArea) {
-      this._maybeUnregister(this.areas, object, "area");
-    }
-    if (object instanceof Label) {
-      this._maybeUnregister(this.labels, object, "labels");
+    const idx = this._idx(this.state[type].objects, object);
+    if (idx >= 0) {
+      this.state[type].objects.splice(idx, 1);
+      console.log("Unregistering", object.constructor.name, "with id", object.id, "from list", type);
     }
   }
 
   all() {
-    return [...this.gates, ...this.pins, ...this.wires, ...this.buttons, ...this.areas, ...this.labels].sort((a, b) => b.zIndexClick - a.zIndexClick);
+    if (!this.allCache) {
+      this._updateAllCache();
+    }
+
+    return this.allCache;
   }
 
   toJson() {
-    return JSON.stringify(
-      {
-        gates: this.gates.map((g) => g.reduce()),
-        wires: this.wires.map((w) => w.reduce()),
-        buttons: this.buttons.map((b) => b.reduce()),
-      },
-      null,
-      2
-    );
+    return JSON.stringify({ gates: this.state["Gate"].objects.map((g) => g.reduce()), wires: this.state["Wire"].objects.map((w) => w.reduce()) }, null, 2);
   }
 
   clear() {
-    this.gates = [];
-    this.pins = [];
-    this.wires = [];
-    this.buttons = [];
-    //this.areas = []; // Don't clear areas, they are used for input and output of the circuit
-    this.labels = [];
+    Object.keys(this.state).forEach((key) => {
+      if (key !== "ClickArea" && key !== "GateTemplate") {
+        this.state[key].objects = [];
+        this.objects[this.state[key].arrayShorthand] = [];
+      }
+    });
     this.objectCounter = 0;
   }
 
   hasState() {
-    return this.gates.length > 0 || this.pins.length > 0 || this.wires.length > 0 || this.buttons.length > 0 || this.labels.length > 0;
+    let result = false;
+    Object.keys(this.state).forEach((key) => {
+      console.log("Checking hasState for key", key, this.state[key].objects.length);
+      if (this.state[key].objects.length > 0 && !this._belongsToGateTemplateArr(this.state[key].objects) && key !== "ClickArea" && key !== "GateTemplate") {
+        result = true;
+      }
+    });
+    return result;
   }
 
   findByID(id) {

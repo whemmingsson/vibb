@@ -5,7 +5,9 @@
     <title>VIBB - Virtual Breadboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Indie+Flower&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="styles.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
@@ -17,16 +19,72 @@
     <script src="label.js"></script>
     <script src="pin.js"></script>
     <script src="button.js"></script>
+    <script src="output.js"></script>
     <script src="gate.js"></script>
     <script src="state.js"></script>
     <script src="breadboard.js"></script>
     <script src="io.js"></script>
+    <script src="menu.js"></script>
     <script src="sketch.js"></script>
 </head>
 
 <body>
-    <div id="sketch-holder"></div>
-    <div id="menu"></div>
+    <div class="main">
+        <header>
+            <h1>Digital Simulator <sup class="beta">beta</sup></h1>
+        </header>
+        <div class="content">
+            <div id="sketch-holder"></div>
+            <div id="menu"></div>
+        </div>
+        <footer>Created by W. Hemmingsson | Source: <a
+                href="https://github.com/whemmingsson/vibb">https://github.com/whemmingsson/vibb</a> </footer>
+
+        <div id="help-icon"><span>?</span></div>
+        <div id="help-section">
+            <div class="close">X</div>
+            <ul>
+                <li>Right click a <span class="keyword">gate</span> to copy it</li>
+                <li>Hover on <span class="keyword">gate</span> and press D to delete it</li>
+                <li>Click, hold and drag to move a <span class="keyword">gate</span></li>
+                <li>Hover on a <span class="keyword">gate</span> and press I to create an <span class="keyword">input
+                        pin</span></li>
+                <li class="divider">Hover on a <span class="keyword">gate</span> and press O to create an <span
+                        class="keyword">output pin</span></li>
+                <li>Click on the <span class="keyword">left vertical bar</span> to create a <span class="keyword">
+                        button</span></li>
+                <li class="divider">Click on the <span class="keyword">right vertical</span> bar to create an <span
+                        class="keyword">output</span></li>
+                <li>Click, hold and drag on an <span class="keyword">output pin</span> / <span
+                        class="keyword">button</span> to start creating a <span class="keyword">wire</span>; drop it on
+                    an <span class="keyword">input pin</span> /
+                    <span class="keyword">output</span>
+                </li>
+                <li class="divider">Right click on either a <span class="keyword">button</span>, <span
+                        class="keyword">input
+                        pin</span>, <span class="keyword">output pin</span> or <span class="keyword">output</span> to
+                    delete it</li>
+                <li>Right click on a <span class="keyword">wire</span> to delete it</li>
+                <li>Click on a <span class="keyword">wire</span> to create an <span class="keyword">anchor</span> (it
+                    can be dragged in the same way as a <span class="keyword">gate</span>)</li>
+                <li>Click on a <span class="keyword">button</span> or an <span class="keyword">input pin </span>(without
+                    ingoing wires) to turn it on.</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+        document.getElementById("help-icon").addEventListener("click", function () {
+            document.getElementById("help-section").classList.toggle("visible");
+        });
+
+        document.querySelector("#help-section .close").addEventListener("click", function () {
+            document.getElementById("help-section").classList.toggle("visible");
+        });
+    </script>
+
+
 </body>
 
 

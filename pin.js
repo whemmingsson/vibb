@@ -14,15 +14,15 @@ class Pin extends ComponentBase {
   _applyBorder() {
     strokeWeight(Globals.StrokeWeight);
     if (this.mouseIsOver()) {
-      ColorScheme.White.applyStroke();
+      GetScheme().White.applyStroke();
     } else {
-      ColorScheme.White.applyStroke();
+      GetScheme().White.applyStroke();
     }
   }
 
   _applyFill() {
-    if (this.on) ColorScheme.SignalOn.applyFill();
-    else ColorScheme.SignalOff.applyFill();
+    if (this.on) GetScheme().SignalOn.applyFill();
+    else GetScheme().Gate.applyFill();
   }
 
   removeWire(wire) {
@@ -79,6 +79,8 @@ class Pin extends ComponentBase {
   }
 
   onClick(mouseButton) {
+    if (this.parentComponent instanceof GateTemplate) return;
+
     if (mouseButton === RIGHT) {
       if (this.type === "input") this.parentComponent.removeInput(this);
       else if (this.type === "output") this.parentComponent.removeOutput(this);

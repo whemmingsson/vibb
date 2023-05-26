@@ -1,15 +1,16 @@
 class ClickArea extends ComponentBase {
-  constructor(x, y, w, h) {
+  constructor(x, y, w, h, type) {
     super(true, true, false, false);
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
+    this.type = type;
   }
 
   render() {
     noStroke();
-    ColorScheme.ClickArea.applyFill();
+    GetScheme().ClickArea.applyFill();
     rect(this.x, this.y, this.w, this.h);
   }
 
