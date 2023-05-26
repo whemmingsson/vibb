@@ -77,7 +77,15 @@ class State {
   }
 
   toJson() {
-    return JSON.stringify({ gates: this.gates.map(g => g.reduce()), wires: this.wires.map(w => w.reduce()) }, null, 2);
+    return JSON.stringify(
+      {
+        gates: this.gates.map((g) => g.reduce()),
+        wires: this.wires.map((w) => w.reduce()),
+        buttons: this.buttons.map((b) => b.reduce()),
+      },
+      null,
+      2
+    );
   }
 
   clear() {
@@ -97,7 +105,6 @@ class State {
   findByID(id) {
     return this.all().find((o) => o.id === id);
   }
-
 }
 
 // Global state of all simulation objects

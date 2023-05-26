@@ -33,7 +33,6 @@ class Button extends ComponentBase {
     this.label.render();
   }
 
-
   updatePosition(x, y) {
     this.x = x;
     this.y = y;
@@ -78,5 +77,15 @@ class Button extends ComponentBase {
     if (outWireIdx >= 0) {
       this.outWires.splice(outWireIdx, 1);
     }
+  }
+
+  reduce() {
+    return {
+      id: this.id,
+      x: this.x,
+      y: this.y,
+      label: this.label.text,
+      outWires: this.outWires.map((w) => w.id),
+    };
   }
 }
