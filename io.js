@@ -31,16 +31,16 @@ class IO {
   }
 
   _loadButtons(stateObj) {
-    console.log("Loading buttons");
     stateObj.buttons.forEach((b) => {
-      console.log(b);
       const button = new Button(b.x, b.y, b.w, b.h);
+      button.id = b.id;
       state.register(button, true);
     });
   }
 
   _loadWires(stateObj) {
     stateObj.wires.forEach((w) => {
+      console.log(w.from, w.to);
       const from = state.findByID(w.from);
       const to = state.findByID(w.to);
       const wire = new Wire(from, to);

@@ -84,6 +84,8 @@ class Button extends ComponentBase {
       id: this.id,
       x: this.x,
       y: this.y,
+      w: this.w,
+      h: this.h,
       type: this.type,
       label: this.label.text,
       outWires: this.outWires.map((w) => w.id),

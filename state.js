@@ -69,6 +69,8 @@ class State {
       return;
     }
 
+    console.log("In register, ", object);
+
     this.state[type].objects.push(object);
 
     if (object instanceof Label) {
