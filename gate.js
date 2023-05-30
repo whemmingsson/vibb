@@ -44,6 +44,10 @@ class Gate extends ComponentBase {
       pin.y = y;
       pin.h = height - Globals.PinSpacing;
       pin.w = height - Globals.PinSpacing;
+
+      // Update the position of the wires
+      pin.inWires.forEach((w) => w.updateSegments());
+      pin.outWires.forEach((w) => w.updateSegments());
     });
   }
 
@@ -135,9 +139,7 @@ class Gate extends ComponentBase {
   }
 
   mouseIsOver() {
-    const mX = mouseX;
-    const mY = mouseY;
-    return mX > this.x && mX < this.x + this.w && mY > this.y && mY < this.y + this.h;
+    return MathUtils.pointIsWithinRectangle({ x: mouseX, y: mouseY }, { x: this.x, y: this.y, w: this.w, h: this.h });
   }
 
   onClick(button) {

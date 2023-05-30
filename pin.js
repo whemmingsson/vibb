@@ -41,11 +41,6 @@ class Pin extends ComponentBase {
     }
   }
 
-  _renderWires() {
-    const wires = [...this.outWires]; // Only render on the "out" side to prevent double rendering
-    wires.forEach((w) => w.render());
-  }
-
   toggle(signal) {
     this.on = signal;
     this.outWires.forEach((wire) => (wire.on = signal));
@@ -62,8 +57,6 @@ class Pin extends ComponentBase {
   }
 
   render() {
-    // NOTE: This has moved to global render function
-    //this._renderWires();
     this._applyFill();
     this._applyBorder();
     if (this.type === "input") arc(this.x, this.y, this.w, this.h, PI / 2, PI / 2 + PI, PIE);
@@ -71,11 +64,8 @@ class Pin extends ComponentBase {
   }
 
   mouseIsOver() {
-    const isWithinCircle = () => {
-      return dist(mouseX, mouseY, this.x, this.y) < this.w / 2;
-    };
-    if (this.type === "input") return isWithinCircle() && mouseX < this.x;
-    if (this.type === "output") return isWithinCircle() && mouseX > this.x;
+    if (this.type === "input") return MathUtils.pointIsWithinCircle({ x: mouseX, y: mouseY }, { x: this.x, y: this.y, w: this.w }) && mouseX < this.x;
+    if (this.type === "output") return MathUtils.pointIsWithinCircle({ x: mouseX, y: mouseY }, { x: this.x, y: this.y, w: this.w }) && mouseX > this.x;
   }
 
   onClick(mouseButton) {

@@ -48,7 +48,6 @@ const SchemeDark = {
   Transparent: new Color(0, 0, 0, 0),
 };
 
-
 // Global constants
 const Globals = {
   PinSpacing: 2,
@@ -89,6 +88,10 @@ const MathUtils = {
     if (Math.abs(dxl) >= Math.abs(dyl)) return dxl > 0 ? p1.x <= p.x && p.x <= p2.x : p2.x <= p.x && p.x <= p1.x;
     else return dyl > 0 ? p1.y <= p.y && p.y <= p2.y : p2.y <= p.y && p.y <= p1.y;
   },
+
+  pointIsWithinRectangle: (p, r) => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h,
+
+  pointIsWithinCircle: (p, c) => dist(p.x, p.y, c.x, c.y) < c.w / 2,
 
   getSnapToGridPoint: (x, y, gcs) => { return { x: Math.round(x / gcs) * gcs, y: Math.round(y / gcs) * gcs } },
 

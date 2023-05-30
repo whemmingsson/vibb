@@ -87,6 +87,47 @@ class Breadboard {
     }
   }
 
+  _handleGateDragging(object) {
+    if (object instanceof Gate && mouseButton === LEFT && !(object instanceof GateTemplate)) {
+      this.dragComponent = object;
+      this.dragDeltaX = Math.abs(mouseX - this.dragComponent.x);
+      this.dragDeltaY = Math.abs(mouseY - this.dragComponent.y);
+      return true;
+    }
+    return false;
+  }
+
+  _handleWireCreation(object) {
+    if (((object instanceof Pin && object.type === "output" && !(object.parentComponent instanceof GateTemplate)) || object instanceof Button) && mouseButton === LEFT) {
+      this.wire = new Wire(object, null, object.on);
+      return true;
+    }
+    return false;
+  }
+
+  _handleInputAreaClick(object) {
+    if (object instanceof ClickArea && object.type === "input" && mouseButton === LEFT) {
+      state.register(new Button(mouseX, mouseY, Globals.ButtonDiameter, Globals.ButtonDiameter));
+      this._positionAndScaleButtons();
+      return true;
+    }
+    return false;
+  }
+
+  _handleOutputAreaClick(object) {
+    if (object instanceof ClickArea && object.type === "output" && mouseButton === LEFT) {
+      state.register(new Output(mouseX, mouseY, Globals.ButtonDiameter, Globals.ButtonDiameter));
+      this._positionAndScaleOutputs();
+      return true;
+    }
+    return false;
+  }
+
+  _handleClick(object) {
+    console.log(object);
+    object.onClick(mouseButton);
+  }
+
   onDraw() {
     GetScheme().Background.applyBackground();
 
@@ -110,45 +151,20 @@ class Breadboard {
   }
 
   onMousePressed() {
-    // TODO: This is a mess. Refactor.
-    const pressableObjects = state.all().filter((o) => o.mouseIsOver && o.mouseIsOver());
-    for (let i = 0; i < pressableObjects.length; i++) {
-      const c = pressableObjects[i];
-
-      // Begin-dragging
-      // To include dragability for buttons: || c instanceof Button
-      if (c instanceof Gate && mouseButton === LEFT && !(c instanceof GateTemplate)) {
-        this.dragComponent = c;
-        this.dragDeltaX = Math.abs(mouseX - this.dragComponent.x);
-        this.dragDeltaY = Math.abs(mouseY - this.dragComponent.y);
-        break;
-      }
-
-      // Handle wire creation
-      if (((c instanceof Pin && c.type === "output" && !(c.parentComponent instanceof GateTemplate)) || c instanceof Button) && mouseButton === LEFT) {
-        this.wire = new Wire(c, null);
-        this.wire.on = c.on;
-        break;
-      }
-
-      // Handle clicking on the input area
-      if (c instanceof ClickArea && mouseButton === LEFT && c.type === "input") {
-        state.register(new Button(mouseX, mouseY, Globals.ButtonDiameter, Globals.ButtonDiameter));
+    for (const object of state.all().filter((o) => o.mouseIsOver && o.mouseIsOver())) {
+      if (this._handleGateDragging(object)) {
+        return;
+      } else if (this._handleWireCreation(object)) {
+        return;
+      } else if (this._handleInputAreaClick(object)) {
+        return;
+      } else if (this._handleOutputAreaClick(object)) {
+        return;
+      } else {
+        this._handleClick(object);
         this._positionAndScaleButtons();
         break;
       }
-
-      // Handle clicking on the output area
-      if (c instanceof ClickArea && mouseButton === LEFT && c.type === "output") {
-        state.register(new Output(mouseX, mouseY, Globals.ButtonDiameter, Globals.ButtonDiameter));
-        this._positionAndScaleOutputs();
-        break;
-      }
-
-      // Default case
-      c.onClick(mouseButton);
-      this._positionAndScaleButtons();
-      break; // Only handle one object per click
     }
 
     state.objects.wires.forEach((w) => w.onMousePressed());

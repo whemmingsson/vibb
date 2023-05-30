@@ -1,5 +1,5 @@
 class Wire extends ComponentBase {
-  constructor(from, to) {
+  constructor(from, to, signal) {
     super(true, true, false, false);
 
     if (from.type !== "output") throw Error("Wire needs to go from Output to Input (from was not output)");
@@ -7,10 +7,17 @@ class Wire extends ComponentBase {
 
     this.from = from;
     this.to = to;
-    this.on = false;
+
+    if (signal === undefined) {
+      this.on = false;
+    }
+    else {
+      this.on = signal;
+    }
 
     // Will represent branches of this wire
     this.anchors = [];
+    this.segments = []
 
     // Will represent the anchor that is currently being dragged
     this.draggingAnchor = null;
@@ -20,20 +27,20 @@ class Wire extends ComponentBase {
     strokeWeight(Globals.WireWeight);
     if (this.mouseIsOver()) {
       GetScheme().White.applyStroke();
-
     }
     else {
       this._getSignalColor().applyStroke();
     }
-
 
     if (this.on) {
       strokeWeight(Globals.WireWeight + 2);
     }
   }
 
-  _createTemporarySegments() {
+  _createSegments() {
     let segments = [];
+    if (this.anchors.length === 0) return segments;
+
     segments.push({ x1: this.from.x, y1: this.from.y, x2: this.anchors[0].x, y2: this.anchors[0].y });
     for (let i = 0; i < this.anchors.length - 1; i++) {
       segments.push({ x1: this.anchors[i].x, y1: this.anchors[i].y, x2: this.anchors[i + 1].x, y2: this.anchors[i + 1].y });
@@ -47,26 +54,7 @@ class Wire extends ComponentBase {
   }
 
   _mouseIsOverAnchor(anchor) {
-    return dist(mouseX, mouseY, anchor.x, anchor.y) < Globals.AnchorDiameter / 2;
-  }
-
-  mouseIsOver() {
-    // Default scenario
-    if (this.anchors.length === 0) {
-      if (this.from && this.to) {
-        return MathUtils.isPointOnLine({ x: mouseX, y: mouseY }, { x: this.from.x, y: this.from.y }, { x: this.to.x, y: this.to.y });
-      }
-      return false;
-    }
-
-    // Now we need to check indvidual line segments.
-    // NOTE: This is required for the cursor / moving anchor functionality
-    let segments = this._createTemporarySegments();
-    for (let i = 0; i < segments.length; i++) {
-      if (this._mouseIsOverSegment(segments[i])) return true;
-    }
-
-    return false;
+    return MathUtils.pointIsWithinCircle({ x: mouseX, y: mouseY }, { x: anchor.x, y: anchor.y, w: Globals.AnchorDiameter });
   }
 
   _applyOnOffStrokeColor() {
@@ -79,11 +67,13 @@ class Wire extends ComponentBase {
       color.applyFill();
       color.applyStroke();
     }
+
     let diameter = Globals.AnchorDiameter;
     if (this._mouseIsOverAnchor({ x: x, y: y })) {
       diameter = 20;
       GetScheme().White.applyFill().applyStroke();
     }
+
     strokeWeight(Globals.StrokeWeight);
     ellipse(x, y, diameter, diameter);
   }
@@ -98,8 +88,7 @@ class Wire extends ComponentBase {
   }
 
   _renderLineSegments() {
-    let segments = this._createTemporarySegments();
-    segments.forEach((s) => {
+    this.segments.forEach((s) => {
       if (this._mouseIsOverSegment(s)) {
         GetScheme().White.applyStroke();
       } else {
@@ -149,11 +138,12 @@ class Wire extends ComponentBase {
     // Only good for when there are no anchors
     if (this.anchors.length === 0) {
       this.anchors.push({ x: mouseX, y: mouseY, anchor: true });
+      this.updateSegments();
       return;
     }
 
     // Find the line segment that the mouse is over
-    const selectedLineSegment = this._createTemporarySegments().find((ls) => this._mouseIsOverSegment(ls));
+    const selectedLineSegment = this.segments.find((ls) => this._mouseIsOverSegment(ls));
     const tempAnchors = [{ x: this.from.x, y: this.from.y }, ...this.anchors, { x: this.to.x, y: this.to.y }];
 
     // Find where to insert the anchor in the list of anchors
@@ -162,7 +152,23 @@ class Wire extends ComponentBase {
     this.anchors.splice(idx, 0, { x: mouseX, y: mouseY });
   }
 
-  /* These functions should ideally belong to a new Anchor class */
+  mouseIsOver() {
+    // Default scenario
+    if (this.anchors.length === 0) {
+      if (this.from && this.to) {
+        return MathUtils.isPointOnLine({ x: mouseX, y: mouseY }, { x: this.from.x, y: this.from.y }, { x: this.to.x, y: this.to.y });
+      }
+      return false;
+    }
+
+    // Now we need to check indvidual line segments.
+    // NOTE: This is required for the cursor / moving anchor functionality
+    for (let i = 0; i < this.segments.length; i++) {
+      if (this._mouseIsOverSegment(this.segments[i])) return true;
+    }
+
+    return false;
+  }
 
   onMousePressed() {
     const anchor = this.anchors.find((a) => this._mouseIsOverAnchor(a));
@@ -174,12 +180,23 @@ class Wire extends ComponentBase {
   onMouseDragged() {
     if (!this.draggingAnchor) return;
 
+    // This is to reduce the number of times we create segments
+    const mousePosChanged = mouseX !== this.draggingAnchor.x || mouseY !== this.draggingAnchor.y;
+
     this.draggingAnchor.x = mouseX;
     this.draggingAnchor.y = mouseY;
+
+    if (mousePosChanged) {
+      this.updateSegments();
+    }
   }
 
   onMouseReleased() {
     this.draggingAnchor = null;
+  }
+
+  updateSegments() {
+    this.segments = this._createSegments();
   }
 
   reduce() {

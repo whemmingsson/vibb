@@ -42,10 +42,7 @@ class Button extends ComponentBase {
   }
 
   mouseIsOver() {
-    const isWithinCircle = () => {
-      return dist(mouseX, mouseY, this.x, this.y) < this.w / 2;
-    };
-    return isWithinCircle();
+    return MathUtils.pointIsWithinCircle({ x: mouseX, y: mouseY }, { x: this.x, y: this.y, w: this.w });
   }
 
   toggle(value) {
