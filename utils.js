@@ -134,3 +134,10 @@ const BrowserUtils = {
     };
   }
 }
+
+const DateUtils = {
+  getToday: () => {
+    const today = new Date();
+    return `${today.getFullYear()}${today.getMonth() + 1}${today.getDate()}_${today.getHours()}${today.getMinutes()}`;
+  }
+}

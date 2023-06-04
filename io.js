@@ -1,8 +1,10 @@
 class IO {
   constructor() { }
 
-  _loadRaw() {
-    return localStorage.getItem("state");
+  _loadRaw(sketchName) {
+    if (this._hasSavedState(sketchName ?? "state")) {
+      return localStorage.getItem(sketchName ?? "state");
+    }
   }
 
   _loadGates(stateObj) {
@@ -59,18 +61,25 @@ class IO {
     });
   }
 
-  save() {
-    if (!!this._loadRaw() && !confirm("Are you sure you want to save? This will overwrite the current state.")) return;
-
-    const stateJson = state.toJson();
-    console.log("Saving...", stateJson);
-    localStorage.setItem("state", stateJson);
+  _hasSavedState(name) {
+    return localStorage.getItem(name) !== null;
   }
 
-  load() {
-    if (state.hasState() && !confirm("Are you sure you want to load? This will clear the current state.")) return;
+  getSavedSketchesNames() {
+    return Object.keys(localStorage).filter((k) => k !== "state");
+  }
 
-    const stateJson = this._loadRaw();
+  save(sketchName) {
+    const stateJson = state.toJson();
+    console.log("Saving...", stateJson, sketchName);
+    localStorage.setItem(sketchName ?? "state", stateJson);
+  }
+
+  load(sketchName) {
+    // TODO: Find a better way to do this - like a "dirty" flag on the state
+    if (state.hasState() && !confirm("Are you sure you want to load? This will clear the current sketch.")) return;
+
+    const stateJson = this._loadRaw(sketchName);
     console.log("Loading...", stateJson);
     const stateObj = JSON.parse(stateJson);
 

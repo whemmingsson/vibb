@@ -88,7 +88,7 @@ class Breadboard {
   }
 
   _handleGateDragging(object) {
-    if (object instanceof Gate && mouseButton === LEFT && !(object instanceof GateTemplate)) {
+    if (object instanceof Gate && mouseButton === LEFT && !(object instanceof GateTemplate) && !keyIsPressed) {
       this.dragComponent = object;
       this.dragDeltaX = Math.abs(mouseX - this.dragComponent.x);
       this.dragDeltaY = Math.abs(mouseY - this.dragComponent.y);

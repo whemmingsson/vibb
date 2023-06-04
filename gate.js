@@ -96,10 +96,6 @@ class Gate extends ComponentBase {
       textAlign(CENTER, CENTER);
       textSize(this.h * 0.5);
       text(this.gate.label.toUpperCase(), this.x + this.w / 2, this.y + this.h / 2 + this.h * 0.05);
-
-      // Render ID for debugging
-      //textSize(this.h * 0.2);
-      //text(this.id, this.x + this.w / 2, this.y + this.h / 2 + this.h * 0.3);
     }
   }
 
@@ -143,8 +139,8 @@ class Gate extends ComponentBase {
   }
 
   onClick(button, keyPressed) {
-    console.log("Gate clicked", keyPressed);
-    if (button === LEFT && (keyPressed === 'Alt' || keyPressed === 'Shift')) {
+    // keyIsPressed is from p5.js - so we should not use it directly here but rather pass it as a parameter
+    if (button === LEFT && keyIsPressed && (keyPressed === 'Alt' || keyPressed === 'Shift')) {
       return this.clone();
     }
     else if (button === RIGHT && !(this instanceof GateTemplate) && confirm("Do you wanna delete this gate?")) {
