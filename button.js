@@ -1,5 +1,5 @@
 class Button extends ComponentBase {
-  constructor(x, y, w, h) {
+  constructor(x, y, w, h, labelText) {
     super(true, true, true, true);
     this.x = x;
     this.y = y;
@@ -9,7 +9,7 @@ class Button extends ComponentBase {
     this.on = false;
     this.outWires = [];
     this.type = "output";
-    this.label = state.register(new Label(this.x + this.w / 2 + 10, this.y - this.h / 2 - 10, "Lorem Ipsum"));
+    this.label = state.register(new Label(this.x + this.w / 2 + 10, this.y - this.h / 2 - 10, labelText ?? "<click to edit>"));
   }
 
   _applyBorder() {

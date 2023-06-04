@@ -5,7 +5,7 @@ class Label extends ComponentBase {
         this.y = y;
         this.w = 0;
         this.h = 0;
-        this.text = "<click to edit>";
+        this.text = text;
         this.textSize = 20;
         this._setWidthAndHeight();
 

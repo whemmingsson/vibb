@@ -32,7 +32,7 @@ class IO {
 
   _loadButtons(stateObj) {
     stateObj.buttons.forEach((b) => {
-      const button = new Button(b.x, b.y, b.w, b.h);
+      const button = new Button(b.x, b.y, b.w, b.h, b.label);
       button.id = b.id;
       state.register(button);
     });
