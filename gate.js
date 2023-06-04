@@ -142,9 +142,14 @@ class Gate extends ComponentBase {
     return MathUtils.pointIsWithinRectangle({ x: mouseX, y: mouseY }, { x: this.x, y: this.y, w: this.w, h: this.h });
   }
 
-  onClick(button) {
-    if (button === RIGHT) {
+  onClick(button, keyPressed) {
+    console.log("Gate clicked", keyPressed);
+    if (button === LEFT && (keyPressed === 'Alt' || keyPressed === 'Shift')) {
       return this.clone();
+    }
+    else if (button === RIGHT && !(this instanceof GateTemplate) && confirm("Do you wanna delete this gate?")) {
+      this.delete();
+      state.unregister(this);
     }
   }
 

@@ -124,8 +124,7 @@ class Breadboard {
   }
 
   _handleClick(object) {
-    console.log(object);
-    object.onClick(mouseButton);
+    object.onClick(mouseButton, key);
   }
 
   onDraw() {
@@ -226,13 +225,7 @@ class Breadboard {
   onKeyTyped() {
     const interactiveObjects = state.all().filter((o) => o.mouseIsOver && o.mouseIsOver() && o.onKeyTyped);
     for (let i = 0; i < interactiveObjects.length; i++) {
-      const c = interactiveObjects[i];
-      if (key != "d") {
-        c.onKeyTyped(key);
-      } else if (!(c instanceof GateTemplate) && confirm("Do you wanna delete this gate?")) {
-        c.delete();
-        state.unregister(c);
-      }
+      interactiveObjects[i].onKeyTyped(key);
     }
   }
 }
