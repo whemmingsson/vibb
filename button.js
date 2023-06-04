@@ -66,6 +66,15 @@ class Button extends ComponentBase {
 
   delete() {
     state.unregister(this);
+    this.outWires.forEach((wire, outWireIdx) => {
+      if (outWireIdx >= 0) {
+        this.outWires.splice(outWireIdx, 1);
+      }
+
+      if (outWireIdx >= 0 || inWireIdx >= 0) {
+        state.unregister(wire);
+      }
+    });
   }
 
   onClick(mouseButton) {

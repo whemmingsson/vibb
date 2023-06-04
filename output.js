@@ -62,6 +62,15 @@ class Output extends ComponentBase {
 
     delete() {
         state.unregister(this);
+        this.inWires.forEach((wire, inWireIdx) => {
+            if (inWireIdx >= 0) {
+                this.inWires.splice(inWireIdx, 1);
+            }
+
+            if (inWireIdx >= 0 || inWireIdx >= 0) {
+                state.unregister(wire);
+            }
+        });
     }
 
     onClick(mouseButton) {
