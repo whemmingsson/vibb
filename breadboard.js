@@ -60,7 +60,7 @@ class Breadboard {
     noStroke();
     textSize(20);
     textAlign(LEFT, CENTER);
-    text("Gates (right-click to clone)", 80, 20);
+    text("Gates (ALT + left-click to clone)", 80, 20);
   }
 
   _positionAndScaleButtons() {
